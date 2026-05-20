@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Prestige High School — Donate & Support</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React & ReactDOM -->
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+  <style>
+    /* Custom theme: beige & maroon (Prestige) */
+    :root {
+      --beige: #F5EFE2;
+      --beige-strong: #ECE0C7;
+      --beige-deep: #E2D4B6;
+      --maroon-light: #B84A60;
+      --maroon: #9E2A3E;
+      --maroon-deep: #7A1F2F;
+    }
+    body {
+      background-color: var(--beige);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    h1, h2, h3, h4, .font-display {
+      font-family: 'Playfair Display', serif;
+    }
+    .maroon-accent-line {
+      width: 5rem;
+      height: 0.25rem;
+      background-color: var(--maroon-light);
+      border-radius: 9999px;
+      margin-bottom: 1.5rem;
+    }
+    .prestige-card {
+      background-color: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(4px);
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      border: 1px solid var(--beige-deep);
+    }
+    .prestige-card:hover {
+      transform: translateY(-4px);
+      background-color: white;
+      box-shadow: 0 25px 35px -12px rgba(90, 30, 40, 0.15);
+    }
+    .section-container {
+      max-width: 1280px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+      padding-top: 5rem;
+      padding-bottom: 5rem;
+    }
+    @media (min-width: 768px) {
+      .section-container {
+        padding-top: 7rem;
+        padding-bottom: 7rem;
+      }
+    }
+    .btn-primary {
+      background-color: var(--maroon-light);
+      transition: all 0.2s ease;
+    }
+    .btn-primary:hover {
+      background-color: var(--maroon);
+      transform: translateY(-2px);
+    }
+    .btn-outline {
+      border: 2px solid var(--maroon-light);
+      color: var(--maroon-light);
+      transition: all 0.2s ease;
+    }
+    .btn-outline:hover {
+      background-color: var(--maroon-light);
+      color: white;
+    }
+    .modal-overlay {
+      background-color: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+    }
+    /* Layout header/sidebar styles */
+    .prestige-header {
+      background: white;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      width: 100%;
+    }
+    .header-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .hamburger {
+      background-color: var(--maroon-light);
+      border: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .hamburger:hover {
+      background-color: var(--maroon);
+      transform: scale(1.02);
+    }
+    .prestige-sidebar {
+      position: fixed;
+      top: 0;
+      left: -300px;
+      width: 300px;
+      height: 100%;
+      background: white;
+      box-shadow: 2px 0 25px rgba(0,0,0,0.15);
+      transition: left 0.3s ease;
+      z-index: 1000;
+      padding: 1.5rem;
+      border-right: 1px solid var(--beige-deep);
+      overflow-y: auto;
+    }
+    .prestige-sidebar.open {
+      left: 0;
+    }
+    .sidebar-header {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1.5rem;
+    }
+    .close-sidebar-btn {
+      background: #f0f0f0;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      transition: all 0.2s;
+    }
+    .close-sidebar-btn:hover {
+      background: var(--maroon-light);
+      color: white;
+    }
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 1rem;
+      transition: all 0.2s;
+      color: #2d3e50;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .nav-link:hover, .nav-link.active {
+      background: var(--maroon-light);
+      color: white;
+    }
+    .prestige-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      display: none;
+    }
+    .prestige-overlay.active {
+      display: block;
+    }
+    .page-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0;
+      min-height: calc(100vh - 80px);
+      background-color: var(--beige);
+    }
+    .prestige-footer {
+      background: #1a1a2e;
+      color: #ccc;
+      padding: 2rem 1rem;
+      text-align: center;
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    // ----- Layout Component (shared header, sidebar, footer) -----
+    const Layout = ({ children }) => {
+      const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+
+      React.useEffect(() => {
+        const saved = localStorage.getItem('prestige_sidebar_open');
+        if (saved === 'true') setIsSidebarOpen(true);
+      }, []);
+
+      const openSidebar = () => {
+        setIsSidebarOpen(true);
+        localStorage.setItem('prestige_sidebar_open', 'true');
+      };
+      const closeSidebar = () => {
+        setIsSidebarOpen(false);
+        localStorage.setItem('prestige_sidebar_open', 'false');
+      };
+      const toggleSidebar = () => {
+        if (isSidebarOpen) closeSidebar();
+        else openSidebar();
+      };
+
+      const navLinks = [
+  { name: 'Home', path: 'index.html', icon: <i className="fas fa-home"></i> },
+  { name: 'About', path: 'about.html', icon: <i className="fas fa-school"></i> },
+  { name: 'Academics', path: 'academics.html', icon: <i className="fas fa-graduation-cap"></i> },
+  { name: 'Admissions', path: 'admissions.html', icon: <i className="fas fa-file-alt"></i> },
+  { name: 'Achievements', path: 'achievements.html', icon: <i className="fas fa-trophy"></i> },
+  { name: 'Sports & Arts', path: 'sports.html', icon: <i className="fas fa-futbol"></i> },
+  { name: 'Gallery', path: 'gallery.html', icon: <i className="fas fa-images"></i> },
+  { name: 'Community & Alumni', path: 'community.html', icon: <i className="fas fa-users"></i> },
+  { name: 'Donate', path: 'donate.html', icon: <i className="fas fa-hand-holding-heart"></i> },
+  { name: 'Contact', path: 'contact.html', icon: <i className="fas fa-envelope"></i> },
+  { name: 'Our Future', path: 'future.html', icon: <i className="fas fa-rocket"></i> }
+];
+
+      const currentPage = window.location.pathname.split('/').pop();
+
+      return (
+        <>
+         <div className="prestige-header">
+  <div className="header-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <button className="hamburger" onClick={toggleSidebar}>☰</button>
+    
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <img src="images/logo.png" alt="Prestige High School" style={{ height: '40px', width: 'auto' }} />
+      <span className="font-display text-2xl font-bold text-gray-800" style={{ whiteSpace: 'nowrap' }}>Oscar Mpetha High School</span>
+    </div>
+    
+    <div style={{ width: 48 }}></div>
+  </div>
+</div>
+
+          <div className={`prestige-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+            <div className="sidebar-header">
+              <button className="close-sidebar-btn" onClick={closeSidebar}>✕</button>
+            </div>
+            <div className="nav-links">
+              {navLinks.map(link => (
+                <a
+                  key={link.path}
+                  href={link.path}
+                  className={`nav-link ${currentPage === link.path ? 'active' : ''}`}
+                >
+                  <span>{link.icon}</span> {link.name}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div className={`prestige-overlay ${isSidebarOpen ? 'active' : ''}`} onClick={closeSidebar}></div>
+
+          <main className="page-content">{children}</main>
+
+              {/* ===== OVERSIZED FUTURISTIC FOOTER ===== */}
+      <footer className="relative bg-[#6B1D2D] text-[#F5F0E6] text-[#F5F0E6] pt-20 pb-10 border-t-4 border-[#B84A60]/50 shadow-2xl overflow-hidden mt-16">
+        {/* Animated glow line */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#B84A60] to-transparent animate-pulse"></div>
+
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          {/* Main footer grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
+            
+            {/* Column 1: School Identity & Logo */}
+            <div>
+              <div className="flex items-center gap-4 mb-8">
+  <div className="w-20 h-20 rounded-full border-2 border-[#F5CCA0] bg-[#6B1D2D]/40 backdrop-blur-sm flex items-center justify-center overflow-hidden shadow-[0_0_15px_rgba(245,204,160,0.3)]">
+    <img src="images/logo.png" alt="Oscar Mpetha Logo" className="w-12 h-12 object-contain" />
+  </div>
+  <div className="serif">
+    <h2 className="text-2xl sm:text-3xl font-black tracking-wide text-[#F5CCA0] drop-shadow-lg">
+      <span className="font-black">OSCAR MPETHA</span>
+      <br />
+      <span className="text-base sm:text-lg font-normal text-[#F5F0E6]">HIGH SCHOOL</span>
+    </h2>
+    <div className="text-xs tracking-wider opacity-80">EST. 1979 · NYANGA, CAPE FLATS</div>
+  </div>
+</div>
+              <p className="text-gray-300 text-sm leading-relaxed">A beacon of academic excellence, holistic development, and community spirit. Shaping future leaders since 1965.</p>
+              <div className="flex gap-4 mt-6">
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-facebook-f text-xl"></i></a>
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-twitter text-xl"></i></a>
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-instagram text-xl"></i></a>
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-youtube text-xl"></i></a>
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-linkedin-in text-xl"></i></a>
+              </div>
+            </div>
+
+            {/* Column 2: Quick Links */}
+            <div>
+              <h3 className="text-lg font-bold uppercase tracking-wider border-l-4 border-[#B84A60] pl-3 mb-5">Explore</h3>
+              <ul className="space-y-3 text-sm">
+                <li><a href="about.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> About Us</a></li>
+                <li><a href="academics.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Academics & Career Compass</a></li>
+                <li><a href="admissions.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Admissions</a></li>
+                <li><a href="achievements.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Achievements</a></li>
+                <li><a href="sports-arts.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Sports & Arts</a></li>
+                <li><a href="gallery.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Gallery</a></li>
+                <li><a href="future.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Our Future</a></li>
+              </ul>
+            </div>
+
+            {/* Column 3: Community & Support */}
+            <div>
+              <h3 className="text-lg font-bold uppercase tracking-wider border-l-4 border-[#B84A60] pl-3 mb-5">Community</h3>
+              <ul className="space-y-3 text-sm">
+                <li><a href="community-alumni.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-users"></i> Alumni & Community</a></li>
+                <li><a href="donate.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-hand-holding-heart"></i> Donate & Support</a></li>
+                <li><a href="contact.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-phone-alt"></i> Contact Us</a></li>
+                <li><a href="#" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-calendar-alt"></i> Events Calendar</a></li>
+                <li><a href="#" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-graduation-cap"></i> Alumni Registration</a></li>
+                <li><a href="#" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chalkboard-user"></i> Parent Portal</a></li>
+              </ul>
+            </div>
+
+            {/* Column 4: Newsletter & Contact */}
+            <div>
+              <h3 className="text-lg font-bold uppercase tracking-wider border-l-4 border-[#B84A60] pl-3 mb-5">Connect</h3>
+              <div className="space-y-3 text-sm">
+                <p><i className="fas fa-map-marker-alt w-5 text-[#B84A60]"></i> 123 Academy Avenue, Prestige Heights, Johannesburg, 2196</p>
+                <p><i className="fas fa-phone-alt w-5 text-[#B84A60]"></i> +27 12 345 6789</p>
+                <p><i className="fas fa-envelope w-5 text-[#B84A60]"></i> info@prestigehigh.co.za</p>
+                <p><i className="fas fa-clock w-5 text-[#B84A60]"></i> Mon–Fri: 07:30 – 16:30</p>
+              </div>
+              <div className="mt-6">
+                <label className="block text-sm font-semibold mb-2">Subscribe to Our Newsletter</label>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input type="email" placeholder="Your email address" className="bg-white/10 border border-[#B84A60]/40 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-[#B84A60] w-full text-white placeholder-gray-400" />
+                  <button id="newsletterSubscribe" className="bg-[#B84A60] text-white font-bold px-5 py-2 rounded-full hover:bg-[#9E2A3E] transition shadow-md">Subscribe</button>
+                </div>
+                <p className="text-xs text-gray-400 mt-2">No spam, just monthly updates.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom bar – legal & back to top */}
+          <div className="mt-16 pt-8 border-t border-[#B84A60]/30 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+            <div className="text-center md:text-left">
+              <p>© 2025 Prestige High School. All rights reserved. | PBO Section 18A | NPO 123-456</p>
+              <p class="text-xs opacity-70 mt-1"><p class="text-xs text-gray-400 mt-1">Designed with <i class="fas fa-heart text-[#B84A60]"></i> for excellence in education.</p> by AbaNtu Intelligence</p>
+
+            </div>
+            <div className="flex gap-6">
+              <a href="#" className="hover:text-[#B84A60] transition">Privacy Policy</a>
+              <a href="#" className="hover:text-[#B84A60] transition">Terms of Use</a>
+              <a href="#" className="hover:text-[#B84A60] transition">Accessibility</a>
+            </div>
+            <button id="backToTop" className="bg-[#B84A60] text-white w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition shadow-lg">
+              <i className="fas fa-arrow-up"></i>
+            </button>
+          </div>
+        </div>
+
+        {/* Decorative particles */}
+        <div className="absolute bottom-0 left-0 w-full h-20 pointer-events-none overflow-hidden">
+          <div className="absolute bottom-0 left-1/4 w-2 h-2 bg-[#B84A60] rounded-full animate-ping opacity-50"></div>
+          <div className="absolute bottom-2 left-1/2 w-1 h-1 bg-[#B84A60] rounded-full animate-pulse opacity-70"></div>
+          <div className="absolute bottom-4 left-3/4 w-1.5 h-1.5 bg-[#B84A60] rounded-full animate-bounce opacity-60"></div>
+        </div>
+      </footer>
+        </>
+      );
+    };
+
+    // ----- Donate Page Content (preserved, with Oscar footer removed) -----
+    const DonateContent = () => {
+      const [showModal, setShowModal] = React.useState(false);
+      const [selectedAmount, setSelectedAmount] = React.useState(null);
+
+      const handleDonateClick = (amount, type) => {
+        setSelectedAmount({ amount, type });
+        setShowModal(true);
+      };
+
+      const closeModal = () => setShowModal(false);
+
+      const handleVolunteer = () => alert("Thank you! Our volunteer coordinator will contact you.");
+      const handlePartner = () => alert("Corporate partnership inquiry sent.");
+      const handleLegacy = () => alert("Legacy giving information will be emailed to you.");
+      const handleInKind = () => alert("Please email donate@prestigehigh.co.za to arrange in-kind donations.");
+      const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text);
+        alert("Bank details copied to clipboard!");
+      };
+
+      return (
+        <>
+          {/* Hero */}
+          <div className="relative bg-gradient-to-br from-[#F5EFE2] via-[#F5EFE2]/95 to-[#E2D4B6]/40 overflow-hidden">
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')] opacity-20"></div>
+            <div className="section-container relative z-10 text-center">
+              <div className="inline-block px-4 py-1 rounded-full bg-[#B84A60]/10 text-[#B84A60] font-semibold text-sm mb-6 tracking-wide">GIVE WITH PURPOSE</div>
+              <h1 className="text-5xl md:text-7xl font-display font-bold text-gray-800 leading-tight">
+                Support <span className="text-[#B84A60]">Prestige</span>
+              </h1>
+              <div className="maroon-accent-line mx-auto mt-6"></div>
+              <p className="mt-6 max-w-2xl mx-auto text-gray-600 text-lg md:text-xl font-light">Your generosity directly empowers learners, transforms classrooms, and builds a legacy of excellence.</p>
+              <div className="flex flex-wrap justify-center gap-5 mt-10">
+                <button onClick={() => handleDonateClick("Any amount", "One-time")} className="btn-primary text-white font-bold py-3 px-8 rounded-full shadow-lg transition">💖 Donate Now</button>
+                <button onClick={handleVolunteer} className="btn-outline font-bold py-3 px-8 rounded-full shadow-md transition">🤝 Volunteer</button>
+                <button onClick={handlePartner} className="bg-white/80 hover:bg-white text-maroon-light font-semibold py-3 px-6 rounded-full shadow transition border border-beige-deep">🏢 Become a Partner</button>
+              </div>
+            </div>
+          </div>
+
+          {/* Impact Metrics */}
+          <div className="bg-white/50 py-12">
+            <div className="section-container !py-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div><div className="text-3xl font-display font-bold text-maroon-light">R2.5M+</div><div className="text-gray-600 text-sm">Raised since 2020</div></div>
+                <div><div className="text-3xl font-display font-bold text-maroon-light">320+</div><div className="text-gray-600 text-sm">Scholarships funded</div></div>
+                <div><div className="text-3xl font-display font-bold text-maroon-light">12</div><div className="text-gray-600 text-sm">Classrooms upgraded</div></div>
+                <div><div className="text-3xl font-display font-bold text-maroon-light">8</div><div className="text-gray-600 text-sm">New sports kits</div></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Ways to Give Grid */}
+          <div className="section-container">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-center text-gray-800">Multiple Ways to Get Involved</h2>
+            <div className="maroon-accent-line mx-auto mt-3"></div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
+              {/* One-time */}
+              <div className="prestige-card p-6 text-center">
+                <div className="text-4xl mb-3">💳</div>
+                <h3 className="font-display font-bold text-xl">One-Time Gift</h3>
+                <p className="text-gray-500 text-sm mt-2">Any amount makes a difference. Support a current project or the general fund.</p>
+                <div className="flex flex-wrap justify-center gap-2 mt-4">
+                  <button onClick={() => handleDonateClick("R250", "One-time")} className="bg-beige-deep/50 px-3 py-1 rounded-full text-sm">R250</button>
+                  <button onClick={() => handleDonateClick("R500", "One-time")} className="bg-beige-deep/50 px-3 py-1 rounded-full text-sm">R500</button>
+                  <button onClick={() => handleDonateClick("R1000", "One-time")} className="bg-beige-deep/50 px-3 py-1 rounded-full text-sm">R1,000</button>
+                  <button onClick={() => handleDonateClick("Custom", "One-time")} className="bg-maroon-light/20 px-3 py-1 rounded-full text-sm">Custom</button>
+                </div>
+                <button onClick={() => handleDonateClick("One-time", "One-time")} className="mt-4 btn-primary text-white py-1.5 px-5 rounded-full text-sm">Donate →</button>
+              </div>
+              {/* Monthly Giving */}
+              <div className="prestige-card p-6 text-center">
+                <div className="text-4xl mb-3">🔄</div>
+                <h3 className="font-display font-bold text-xl">Monthly Sustainer</h3>
+                <p className="text-gray-500 text-sm mt-2">Join our Prestige Partners program. Reliable monthly support fuels ongoing programs.</p>
+                <div className="flex flex-wrap justify-center gap-2 mt-4">
+                  <button onClick={() => handleDonateClick("R100/mo", "Monthly")} className="bg-beige-deep/50 px-3 py-1 rounded-full text-sm">R100/mo</button>
+                  <button onClick={() => handleDonateClick("R250/mo", "Monthly")} className="bg-beige-deep/50 px-3 py-1 rounded-full text-sm">R250/mo</button>
+                  <button onClick={() => handleDonateClick("R500/mo", "Monthly")} className="bg-beige-deep/50 px-3 py-1 rounded-full text-sm">R500/mo</button>
+                </div>
+                <button onClick={() => handleDonateClick("Monthly", "Monthly")} className="mt-4 btn-primary text-white py-1.5 px-5 rounded-full text-sm">Become a Partner →</button>
+              </div>
+              {/* Sponsor a Learner */}
+              <div className="prestige-card p-6 text-center">
+                <div className="text-4xl mb-3">🎓</div>
+                <h3 className="font-display font-bold text-xl">Sponsor a Learner</h3>
+                <p className="text-gray-500 text-sm mt-2">R12,000 covers full annual tuition for one deserving student. Change a life.</p>
+                <button onClick={() => handleDonateClick("R12,000", "Sponsorship")} className="mt-4 btn-primary text-white py-1.5 px-5 rounded-full text-sm">Sponsor Now →</button>
+              </div>
+              {/* In-Kind Donations */}
+              <div className="prestige-card p-6 text-center">
+                <div className="text-4xl mb-3">📚</div>
+                <h3 className="font-display font-bold text-xl">In-Kind Gifts</h3>
+                <p className="text-gray-500 text-sm mt-2">Laptops, textbooks, sports equipment, musical instruments, or art supplies.</p>
+                <button onClick={handleInKind} className="mt-4 btn-outline py-1.5 px-5 rounded-full text-sm">Donate Goods →</button>
+              </div>
+              {/* Legacy/Wills */}
+              <div className="prestige-card p-6 text-center">
+                <div className="text-4xl mb-3">📜</div>
+                <h3 className="font-display font-bold text-xl">Legacy Giving</h3>
+                <p className="text-gray-500 text-sm mt-2">Include Prestige in your will or estate plan. Leave a lasting impact.</p>
+                <button onClick={handleLegacy} className="mt-4 btn-outline py-1.5 px-5 rounded-full text-sm">Learn More →</button>
+              </div>
+              {/* Corporate Partnerships */}
+              <div className="prestige-card p-6 text-center">
+                <div className="text-4xl mb-3">🏢</div>
+                <h3 className="font-display font-bold text-xl">Corporate Matching</h3>
+                <p className="text-gray-500 text-sm mt-2">Double your impact. Many employers match donations. Ask your HR department.</p>
+                <button onClick={handlePartner} className="mt-4 btn-outline py-1.5 px-5 rounded-full text-sm">Partner with Us →</button>
+              </div>
+            </div>
+          </div>
+
+          {/* Banking Details Section */}
+          <div className="bg-white/60 py-12">
+            <div className="section-container !py-6 max-w-3xl">
+              <div className="prestige-card p-6 md:p-8 text-center">
+                <div className="text-4xl mb-3">🏦</div>
+                <h3 className="text-2xl font-display font-bold text-gray-800 mb-2">Bank Transfer Details</h3>
+                <p className="text-gray-600 text-sm mb-4">All donations are tax-deductible under Section 18A. Use your name as reference.</p>
+                <div className="bg-beige-deep/30 rounded-xl p-5 text-left space-y-3 font-mono text-sm">
+                  <div className="flex justify-between flex-wrap gap-2"><span className="font-semibold text-gray-700">Account Name:</span><span className="text-gray-800">Prestige High School Development Trust</span></div>
+                  <div className="flex justify-between flex-wrap gap-2"><span className="font-semibold text-gray-700">Bank:</span><span className="text-gray-800">First National Bank (FNB)</span></div>
+                  <div className="flex justify-between flex-wrap gap-2"><span className="font-semibold text-gray-700">Branch Code:</span><span className="text-gray-800">250655 (Corporate)</span></div>
+                  <div className="flex justify-between flex-wrap gap-2"><span className="font-semibold text-gray-700">Account Number:</span><span className="text-gray-800">628 394 721 09</span></div>
+                  <div className="flex justify-between flex-wrap gap-2"><span className="font-semibold text-gray-700">Account Type:</span><span className="text-gray-800">Cheque / Current</span></div>
+                  <div className="flex justify-between flex-wrap gap-2"><span className="font-semibold text-gray-700">SWIFT/BIC:</span><span className="text-gray-800">FIRNZAJJ (for international)</span></div>
+                  <div className="flex justify-between flex-wrap gap-2"><span className="font-semibold text-gray-700">Reference:</span><span className="text-gray-800">Your Name + "Donation"</span></div>
+                </div>
+                <div className="flex justify-center gap-3 mt-5">
+                  <button onClick={() => copyToClipboard("628 394 721 09")} className="btn-outline text-sm py-1.5 px-4 rounded-full">📋 Copy Account Number</button>
+                  <button onClick={() => copyToClipboard("Prestige High School Development Trust")} className="btn-outline text-sm py-1.5 px-4 rounded-full">📋 Copy Account Name</button>
+                </div>
+                <p className="text-xs text-gray-400 mt-4">After transfer, please email proof to finance@prestigehigh.co.za for a Section 18A certificate.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Featured Project: Library Upgrade */}
+          <div className="bg-maroon-light/10 py-16">
+            <div className="section-container !py-8">
+              <div className="flex flex-col md:flex-row gap-10 items-center">
+                <div className="md:w-1/2">
+                  <span className="text-maroon-light font-semibold text-sm">CURRENT CAMPAIGN</span>
+                  <h2 className="text-3xl font-display font-bold text-gray-800 mt-2">Innovation Hub & Library</h2>
+                  <p className="text-gray-600 mt-4">We're building a state-of-the-art media centre with collaborative spaces, a makerspace, and digital research tools. Your gift brings future-ready learning to every student.</p>
+                  <div className="mt-4 bg-beige-deep/50 rounded-full h-3 w-full"><div className="bg-maroon-light h-3 rounded-full" style={{width: '45%'}}></div></div>
+                  <p className="text-sm text-gray-500 mt-2">R450,000 raised of R1,000,000 goal</p>
+                  <button onClick={() => handleDonateClick("Library Fund", "Campaign")} className="mt-5 btn-primary text-white px-6 py-2 rounded-full">Contribute to this Project →</button>
+                </div>
+                <div className="md:w-1/2 prestige-card p-4">
+                  <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&h=400&fit=crop" alt="Library concept" className="rounded-xl w-full h-64 object-cover" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Additional CTA Banner */}
+          <div className="section-container text-center">
+            <div className="prestige-card p-8 max-w-3xl mx-auto">
+              <h3 className="text-2xl font-display font-bold">Every Rand Counts</h3>
+              <p className="text-gray-600 mt-2">Donate via EFT, credit card, or SnapScan. All contributions are Section 18A tax-deductible.</p>
+              <div className="flex flex-wrap justify-center gap-4 mt-6">
+                <button onClick={() => handleDonateClick("Any", "Any")} className="btn-primary px-6 py-2 rounded-full">Donate Online</button>
+                <button onClick={handleVolunteer} className="btn-outline px-6 py-2 rounded-full">Volunteer Your Time</button>
+                <button onClick={handlePartner} className="bg-beige-deep text-gray-800 px-6 py-2 rounded-full">Contact Development Office</button>
+              </div>
+            </div>
+          </div>
+
+          {/* Donation Confirmation Modal */}
+          {showModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay" onClick={closeModal}>
+              <div className="bg-white rounded-2xl max-w-md w-full p-6 text-center" onClick={(e) => e.stopPropagation()}>
+                <div className="text-5xl mb-3">🎉</div>
+                <h3 className="text-2xl font-display font-bold text-gray-800">Thank You!</h3>
+                <p className="text-gray-600 mt-2">Your {selectedAmount?.amount} {selectedAmount?.type && `(${selectedAmount.type})`} donation will make a real difference.</p>
+                <p className="text-sm text-gray-500 mt-1">You will now be redirected to our secure payment gateway.</p>
+                <button onClick={closeModal} className="mt-6 btn-primary text-white px-6 py-2 rounded-full">Close</button>
+              </div>
+            </div>
+          )}
+        </>
+      );
+    };
+
+    // Wrap everything in Layout
+    const App = () => (
+      <Layout>
+        <DonateContent />
+      </Layout>
+    );
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

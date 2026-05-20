@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Oscar Mpetha High School — About</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+  <style>
+    /* Prestige theme variables */
+    :root {
+      --beige: #F5EFE2;
+      --beige-strong: #ECE0C7;
+      --beige-deep: #E2D4B6;
+      --maroon-light: #B84A60;
+      --maroon: #9E2A3E;
+      --maroon-deep: #7A1F2F;
+    }
+    /* Preserve original Oscar Mpetha styles (but keep hero styles from Prestige) */
+    body {
+      background-color: var(--beige);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .serif {
+      font-family: 'Cormorant Garamond', serif;
+    }
+    .font-display {
+      font-family: 'Playfair Display', serif;
+    }
+    .maroon-bg {
+      background-color: #6B1D2D;
+    }
+    .maroon-text {
+      color: #6B1D2D;
+    }
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 1rem;
+      border: 3px solid #6B1D2D;
+    }
+    .video-container video, .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .prestige-card {
+      background-color: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(4px);
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      border: 1px solid var(--beige-deep);
+    }
+    /* Layout styles for sidebar and header */
+    .prestige-header {
+      background: white;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      width: 100%;
+    }
+    .header-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .hamburger {
+      background-color: var(--maroon-light);
+      border: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .hamburger:hover {
+      background-color: var(--maroon);
+      transform: scale(1.02);
+    }
+    .prestige-sidebar {
+      position: fixed;
+      top: 0;
+      left: -300px;
+      width: 300px;
+      height: 100%;
+      background: white;
+      box-shadow: 2px 0 25px rgba(0,0,0,0.15);
+      transition: left 0.3s ease;
+      z-index: 1000;
+      padding: 1.5rem;
+      border-right: 1px solid var(--beige-deep);
+      overflow-y: auto;
+    }
+    .prestige-sidebar.open {
+      left: 0;
+    }
+    .sidebar-header {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1.5rem;
+    }
+    .close-sidebar-btn {
+      background: #f0f0f0;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      transition: all 0.2s;
+    }
+    .close-sidebar-btn:hover {
+      background: var(--maroon-light);
+      color: white;
+    }
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 1rem;
+      transition: all 0.2s;
+      color: #2d3e50;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .nav-link:hover, .nav-link.active {
+      background: var(--maroon-light);
+      color: white;
+    }
+    .prestige-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      display: none;
+    }
+    .prestige-overlay.active {
+      display: block;
+    }
+    .page-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      min-height: calc(100vh - 80px);
+      background-color: var(--beige);
+    }
+    .prestige-footer {
+      background: #1a1a2e;
+      color: #ccc;
+      padding: 2rem 1rem;
+      text-align: center;
+      margin-top: 3rem;
+    }
+    .maroon-accent-line {
+      width: 5rem;
+      height: 0.25rem;
+      background-color: var(--maroon-light);
+      border-radius: 9999px;
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Prestige Header with Hamburger -->
+  <div class="prestige-header">
+  <div class="header-container" style="display: flex; justify-content: space-between; align-items: center;">
+    <!-- Hamburger (left) -->
+    <button class="hamburger" id="hamburgerBtn">☰</button>
+    
+    <!-- Logo + School Name (center, close together) -->
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <img src="images/logo.png" alt="Prestige High School" style="height: 40px; width: auto;">
+      <span class="font-display text-2xl font-bold text-gray-800" style="white-space: nowrap;">Oscar Mpetha High School</span>
+    </div>
+    
+    <!-- Spacer (right) to balance hamburger -->
+    <div style="width: 48px;"></div>
+  </div>
+</div>
+
+  <!-- Prestige Sidebar -->
+  <div class="prestige-sidebar" id="prestigeSidebar">
+    <div class="sidebar-header">
+      <button class="close-sidebar-btn" id="closeSidebar">✕</button>
+    </div>
+    <div class="nav-links">
+      
+      <a href="index.html" class="nav-link">🏠 Home</a>
+      <a href="about.html" class="nav-link active">🏫 About</a>
+      <a href="academics.html" class="nav-link">📚 Academics</a>
+      <a href="admissions.html" class="nav-link">✉️ Admissions</a>
+      <a href="achievements.html" class="nav-link">🏆 Achievements</a>
+      <a href="sports-arts.html" class="nav-link">⚽🎭 Sports & Arts</a>
+      <a href="gallery.html" class="nav-link">🖼️ Gallery</a>
+      <a href="community.html" class="nav-link">🤝 Community & Alumni</a>
+      <a href="donate.html" class="nav-link">💰 Donate</a>
+      <a href="contact.html" class="nav-link">📞 Contact</a>
+      <a href="future.html" class="nav-link">🚀 Our Future</a>
+    </div>
+  </div>
+
+  <!-- Overlay -->
+  <div class="prestige-overlay" id="sidebarOverlay"></div>
+
+  <!-- Main Content -->
+  <main class="page-content">
+    <!-- PRESTIGE-STYLE HERO (uniform with other pages) -->
+    <div class="relative bg-gradient-to-br from-[#F5EFE2] via-[#F5EFE2]/95 to-[#E2D4B6]/40 overflow-hidden rounded-2xl mb-12 img">
+      <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')] opacity-20"></div>
+      <div class="max-w-4xl mx-auto text-center py-16 px-6 relative z-10">
+        <div class="inline-block px-4 py-1 rounded-full bg-[#B84A60]/10 text-[#B84A60] font-semibold text-sm mb-6 tracking-wide">EST. 1979</div>
+        <h1 class="text-5xl md:text-7xl font-display font-bold text-gray-800 leading-tight">
+         About <span class="text-[#B84A60]">Us</span><br />
+        </h1>
+        <div class="maroon-accent-line mx-auto mt-6"></div>
+        <p class="mt-6 max-w-2xl mx-auto text-gray-600 text-lg">A no‑fee school of excellence, resilience, and innovation. We produce leaders who break barriers and build communities.</p>
+      </div>
+    </div>
+
+    <!-- ===== YOUR ORIGINAL OSCAR MPETHA CONTENT STARTS HERE (UNCHANGED) ===== -->
+    <!-- Principal's Message with Video (exactly as you had it) -->
+    <div class="grid md:grid-cols-2 gap-8 items-center mb-16">
+      <div>
+        <div class="video-container">
+          <video controls poster="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&h=450&fit=crop">
+            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <div class="space-y-4">
+        <h2 class="serif text-3xl font-bold maroon-text">Principal’s Message</h2>
+        <p class="text-gray-700">“At Oscar Mpetha, we don't just teach subjects – we build character, resilience, and the courage to dream beyond circumstances. Our learners are the future of Nyanga and South Africa.”</p>
+        <p class="font-semibold maroon-text">– Mr. Vuyo Nkosi, Principal</p>
+      </div>
+    </div>
+
+    <!-- SGB Section – 6 cards (I'm using the 4 you provided + 2 additional to reach 6, but keep your original content) -->
+    <div class="mb-16">
+      <h2 class="serif text-3xl font-bold text-center maroon-text mb-8">School Governing Body</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Card 1 -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop" alt="Chairperson" class="w-full h-56 object-cover">
+          <div class="p-4 text-center">
+            <h3 class="font-bold text-lg">Nomfundo Dlamini</h3>
+            <p class="text-maroon">Chairperson</p>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop" alt="Vice Chair" class="w-full h-56 object-cover">
+          <div class="p-4 text-center">
+            <h3 class="font-bold text-lg">Thabo Molefe</h3>
+            <p class="text-maroon">Vice‑Chairperson</p>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1580894732444-8ecded7900cd?w=400&h=400&fit=crop" alt="Parent Rep" class="w-full h-56 object-cover">
+          <div class="p-4 text-center">
+            <h3 class="font-bold text-lg">Lindiwe Xaba</h3>
+            <p class="text-maroon">Parent Rep</p>
+          </div>
+        </div>
+        <!-- Card 4 -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop" alt="Secretary" class="w-full h-56 object-cover">
+          <div class="p-4 text-center">
+            <h3 class="font-bold text-lg">Dr. Matthew Peters</h3>
+            <p class="text-maroon">Educator Rep</p>
+          </div>
+        </div>
+        <!-- Card 5 (additional) -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" alt="Community Rep" class="w-full h-56 object-cover">
+          <div class="p-4 text-center">
+            <h3 class="font-bold text-lg">Zanele Khumalo</h3>
+            <p class="text-maroon">Community Representative</p>
+          </div>
+        </div>
+        <!-- Card 6 (additional) -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop" alt="Alumni Rep" class="w-full h-56 object-cover">
+          <div class="p-4 text-center">
+            <h3 class="font-bold text-lg">Sipho Ngcobo</h3>
+            <p class="text-maroon">Alumni Representative</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- "Our Father" Section with Video (as requested) -->
+    <div class="bg-[#ECE0C7]/30 rounded-2xl p-8 mb-16">
+      <h2 class="serif text-3xl font-bold text-center maroon-text mb-6">Our Father Who Art In Greatness... </h2>
+      <div class="max-w-3xl mx-auto">
+        <div class="video-container">
+          <video controls poster="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&h=450&fit=crop">
+            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" type="video/mp4">
+          </video>
+        </div>
+        <p class="text-gray-700 text-center mt-4">Honouring the vision of Oscar Mpetha and the founding fathers who built this school from the ground up.</p>
+      </div>
+    </div>
+
+    <!-- Optional: Core Values (you can keep or remove – not requested but harmless) -->
+<div class="bg-gradient-to-br from-[#6B1D2D] to-[#8B2A3E] rounded-2xl p-8 md:p-12 text-center shadow-xl">
+  <h2 class="serif text-4xl md:text-5xl font-bold text-[#F5CCA0] mb-4 drop-shadow-md">Our Core Values</h2>
+  <div class="w-24 h-1 bg-[#F5CCA0] mx-auto mb-8 rounded-full"></div>
+  <div class="grid md:grid-cols-3 gap-8 mt-6">
+    <!-- Value 1: Excellence -->
+    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 transition-all duration-300 hover:bg-white/20 hover:scale-105">
+      <div class="w-20 h-20 rounded-full bg-[#F5CCA0]/20 flex items-center justify-center mx-auto mb-4">
+        <i class="fas fa-chalkboard-teacher text-4xl text-[#F5CCA0]"></i>
+      </div>
+      <h3 class="font-bold text-2xl text-white mb-2">Excellence</h3>
+      <p class="text-[#F5F0E6] text-base leading-relaxed">Striving for the best in all we do — academically, socially, and personally.</p>
+    </div>
+    
+    <!-- Value 2: Ubuntu -->
+    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 transition-all duration-300 hover:bg-white/20 hover:scale-105">
+      <div class="w-20 h-20 rounded-full bg-[#F5CCA0]/20 flex items-center justify-center mx-auto mb-4">
+        <i class="fas fa-hand-holding-heart text-4xl text-[#F5CCA0]"></i>
+      </div>
+      <h3 class="font-bold text-2xl text-white mb-2">Ubuntu</h3>
+      <p class="text-[#F5F0E6] text-base leading-relaxed">"I am because we are" — fostering community, compassion, and mutual respect.</p>
+    </div>
+    
+    <!-- Value 3: Resilience -->
+    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 transition-all duration-300 hover:bg-white/20 hover:scale-105">
+      <div class="w-20 h-20 rounded-full bg-[#F5CCA0]/20 flex items-center justify-center mx-auto mb-4">
+        <i class="fas fa-rocket text-4xl text-[#F5CCA0]"></i>
+      </div>
+      <h3 class="font-bold text-2xl text-white mb-2">Resilience</h3>
+      <p class="text-[#F5F0E6] text-base leading-relaxed">Overcoming obstacles together with courage, perseverance, and determination.</p>
+    </div>
+  </div>
+</div>
+  </main>
+
+  <!-- Prestige Footer -->
+  <!-- 🚀 OVERSIZED FUTURISTIC FOOTER – Prestige High School -->
+<footer class="relative bg-[#6B1D2D] text-[#F5F0E6] text-[#F5F0E6] pt-20 pb-10 border-t-4 border-[#B84A60]/50 shadow-2xl overflow-hidden mt-16">
+  <!-- Animated glow line (top) -->
+  <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#B84A60] to-transparent animate-pulse"></div>
+
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <!-- Main footer grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
+      
+      <!-- Column 1: School Identity & Logo -->
+      <div>
+      <div class="flex items-center gap-4 mb-8">
+      <div class="w-20 h-20 rounded-full border-2 border-[#F5CCA0] bg-[#6B1D2D]/40 backdrop-blur-sm flex items-center justify-center overflow-hidden shadow-[0_0_15px_rgba(245,204,160,0.3)]">
+        <img src="images/logo.png" alt="Oscar Mpetha Logo" class="w-12 h-12 object-contain">
+      </div>
+      <div class="serif">
+        <h2 class="text-2xl sm:text-3xl font-black tracking-wide text-[#F5CCA0] drop-shadow-lg"><span class="font-black">OSCAR MPETHA</span><br><span class="text-base sm:text-lg font-normal text-[#F5F0E6]">HIGH SCHOOL</span></h2>
+        <div class="text-xs tracking-wider opacity-80">EST. 1979 · NYANGA, CAPE FLATS</div>
+      </div>
+    </div>
+        <p class="text-gray-300 text-sm leading-relaxed">A beacon of academic excellence, holistic development, and community spirit. Shaping future leaders since 1965.</p>
+        <div class="flex gap-4 mt-6">
+          <a href="#" class="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i class="fab fa-facebook-f text-xl"></i></a>
+          <a href="#" class="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i class="fab fa-twitter text-xl"></i></a>
+          <a href="#" class="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i class="fab fa-instagram text-xl"></i></a>
+          <a href="#" class="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i class="fab fa-youtube text-xl"></i></a>
+          <a href="#" class="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i class="fab fa-linkedin-in text-xl"></i></a>
+        </div>
+      </div>
+
+      <!-- Column 2: Quick Links (main pages) -->
+      <div>
+        <h3 class="text-lg font-bold uppercase tracking-wider border-l-4 border-[#B84A60] pl-3 mb-5">Explore</h3>
+        <ul class="space-y-3 text-sm">
+          <li><a href="about.html" class="hover:text-[#B84A60] transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> About Us</a></li>
+          <li><a href="academics.html" class="hover:text-[#B84A60] transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> Academics & Career Compass</a></li>
+          <li><a href="admissions.html" class="hover:text-[#B84A60] transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> Admissions</a></li>
+          <li><a href="achievements.html" class="hover:text-[#B84A60] transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> Achievements</a></li>
+          <li><a href="sports-arts.html" class="hover:text-[#B84A60] transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> Sports & Arts</a></li>
+          <li><a href="gallery.html" class="hover:text-[#B84A60] transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> Gallery</a></li>
+          <li><a href="future.html" class="hover:text-[#B84A60] transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> Our Future</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Community & Support -->
+      <div>
+        <h3 class="text-lg font-bold uppercase tracking-wider border-l-4 border-[#B84A60] pl-3 mb-5">Community</h3>
+        <ul class="space-y-3 text-sm">
+          <li><a href="community-alumni.html" class="hover:text-[#B84A60] transition flex items-center gap-2"><i class="fas fa-users"></i> Alumni & Community</a></li>
+          <li><a href="donate.html" class="hover:text-[#B84A60] transition flex items-center gap-2"><i class="fas fa-hand-holding-heart"></i> Donate & Support</a></li>
+          <li><a href="contact.html" class="hover:text-[#B84A60] transition flex items-center gap-2"><i class="fas fa-phone-alt"></i> Contact Us</a></li>
+          <li><a href="#" class="hover:text-[#B84A60] transition flex items-center gap-2"><i class="fas fa-calendar-alt"></i> Events Calendar</a></li>
+          <li><a href="#" class="hover:text-[#B84A60] transition flex items-center gap-2"><i class="fas fa-graduation-cap"></i> Alumni Registration</a></li>
+          <li><a href="#" class="hover:text-[#B84A60] transition flex items-center gap-2"><i class="fas fa-chalkboard-user"></i> Parent Portal</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 4: Newsletter & Contact -->
+      <div>
+        <h3 class="text-lg font-bold uppercase tracking-wider border-l-4 border-[#B84A60] pl-3 mb-5">Connect</h3>
+        <div class="space-y-3 text-sm">
+          <p><i class="fas fa-map-marker-alt w-5 text-[#B84A60]"></i> 123 Academy Avenue, Prestige Heights, Johannesburg, 2196</p>
+          <p><i class="fas fa-phone-alt w-5 text-[#B84A60]"></i> +27 12 345 6789</p>
+          <p><i class="fas fa-envelope w-5 text-[#B84A60]"></i> info@prestigehigh.co.za</p>
+          <p><i class="fas fa-clock w-5 text-[#B84A60]"></i> Mon–Fri: 07:30 – 16:30</p>
+        </div>
+        <div class="mt-6">
+          <label class="block text-sm font-semibold mb-2">Subscribe to Our Newsletter</label>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input type="email" placeholder="Your email address" class="bg-white/10 border border-[#B84A60]/40 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-[#B84A60] w-full text-white placeholder-gray-400">
+            <button class="bg-[#B84A60] text-white font-bold px-5 py-2 rounded-full hover:bg-[#9E2A3E] transition shadow-md">Subscribe</button>
+          </div>
+          <p class="text-xs text-gray-400 mt-2">No spam, just monthly updates.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom bar – legal & back to top -->
+    <div class="mt-16 pt-8 border-t border-[#B84A60]/30 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+      <div class="text-center md:text-left">
+        <p>© 2025 Prestige High School. All rights reserved. | PBO Section 18A | NPO 123-456</p>
+        <p class="text-xs text-gray-400 mt-1">Designed with <i class="fas fa-heart text-[#B84A60]"></i> for excellence in education.</p>
+      </div>
+      <div class="flex gap-6">
+        <a href="#" class="hover:text-[#B84A60] transition">Privacy Policy</a>
+        <a href="#" class="hover:text-[#B84A60] transition">Terms of Use</a>
+        <a href="#" class="hover:text-[#B84A60] transition">Accessibility</a>
+      </div>
+      <button id="backToTop" class="bg-[#B84A60] text-white w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition shadow-lg">
+        <i class="fas fa-arrow-up"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Decorative floating particles (optional) -->
+  <div class="absolute bottom-0 left-0 w-full h-20 pointer-events-none overflow-hidden">
+    <div class="absolute bottom-0 left-1/4 w-2 h-2 bg-[#B84A60] rounded-full animate-ping opacity-50"></div>
+    <div class="absolute bottom-2 left-1/2 w-1 h-1 bg-[#B84A60] rounded-full animate-pulse opacity-70"></div>
+    <div class="absolute bottom-4 left-3/4 w-1.5 h-1.5 bg-[#B84A60] rounded-full animate-bounce opacity-60"></div>
+  </div>
+</footer>
+
+<script>
+  // Back to top button functionality
+  const backToTop = document.getElementById('backToTop');
+  if (backToTop) {
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+  // Newsletter subscription demo
+  const subBtn = document.querySelector('footer button:not(#backToTop)');
+  if (subBtn) {
+    subBtn.addEventListener('click', (e) => {
+      const emailInput = subBtn.previousElementSibling;
+      if (emailInput && emailInput.value) {
+        alert(`Thank you for subscribing! We'll send news to ${emailInput.value}.`);
+        emailInput.value = '';
+      } else {
+        alert('Please enter a valid email address.');
+      }
+    });
+  }
+</script>
+
+  <script>
+    // Sidebar toggle with localStorage
+    (function() {
+      const sidebar = document.getElementById('prestigeSidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      const hamburger = document.getElementById('hamburgerBtn');
+      const closeBtn = document.getElementById('closeSidebar');
+      const STORAGE_KEY = 'prestige_sidebar_open';
+
+      function openSidebar() {
+        sidebar.classList.add('open');
+        overlay.classList.add('active');
+        localStorage.setItem(STORAGE_KEY, 'true');
+      }
+      function closeSidebar() {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+        localStorage.setItem(STORAGE_KEY, 'false');
+      }
+      function toggleSidebar() {
+        if (sidebar.classList.contains('open')) closeSidebar();
+        else openSidebar();
+      }
+
+      if (localStorage.getItem(STORAGE_KEY) === 'true') openSidebar();
+      else closeSidebar();
+
+      hamburger.addEventListener('click', toggleSidebar);
+      closeBtn.addEventListener('click', closeSidebar);
+      overlay.addEventListener('click', closeSidebar);
+    })();
+  </script>
+</body>
+</html>

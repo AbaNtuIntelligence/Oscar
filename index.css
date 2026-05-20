@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-beige font-body text-gray-800;
+  }
+  h1, h2, h3, h4, .font-display {
+    @apply font-display;
+  }
+}
+
+@layer components {
+  .section-container {
+    @apply max-w-7xl mx-auto px-6 lg:px-8 py-20 md:py-28;
+  }
+  .maroon-accent-line {
+    @apply w-20 h-1 bg-maroon-light rounded-full mb-6;
+  }
+  .prestige-card {
+    @apply bg-white/80 backdrop-blur-sm rounded-2xl shadow-prestige transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1 border border-beige-deep/30;
+  }
+}

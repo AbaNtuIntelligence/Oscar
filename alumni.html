@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Prestige High School — Community & Alumni</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React & ReactDOM -->
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+  <style>
+    /* Custom styles (keep the original ones, plus layout additions) */
+    :root {
+      --beige: #F5EFE2;
+      --beige-strong: #ECE0C7;
+      --beige-deep: #E2D4B6;
+      --maroon-light: #B84A60;
+      --maroon: #9E2A3E;
+      --maroon-deep: #7A1F2F;
+    }
+    body {
+      background-color: var(--beige);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .font-display, h1, h2, h3, h4 {
+      font-family: 'Playfair Display', serif;
+    }
+    .maroon-accent-line {
+      width: 5rem;
+      height: 0.25rem;
+      background-color: var(--maroon-light);
+      border-radius: 9999px;
+      margin-bottom: 1.5rem;
+    }
+    .prestige-card {
+      background-color: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(4px);
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      border: 1px solid var(--beige-deep);
+    }
+    .prestige-card:hover {
+      transform: translateY(-4px);
+      background-color: white;
+      box-shadow: 0 25px 35px -12px rgba(90, 30, 40, 0.15);
+    }
+    .section-container {
+      max-width: 1280px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+      padding-top: 5rem;
+      padding-bottom: 5rem;
+    }
+    @media (min-width: 768px) {
+      .section-container {
+        padding-top: 7rem;
+        padding-bottom: 7rem;
+      }
+    }
+    .btn-primary {
+      background-color: var(--maroon-light);
+      transition: all 0.2s ease;
+    }
+    .btn-primary:hover {
+      background-color: var(--maroon);
+      transform: translateY(-2px);
+    }
+    .btn-outline {
+      border: 2px solid var(--maroon-light);
+      color: var(--maroon-light);
+      transition: all 0.2s ease;
+    }
+    .btn-outline:hover {
+      background-color: var(--maroon-light);
+      color: white;
+    }
+    /* Modal styles */
+    .modal-overlay {
+      background-color: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+    }
+    .modal-content {
+      animation: modalFadeIn 0.25s ease-out;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .nav-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0,0,0,0.5);
+      color: white;
+      border-radius: 9999px;
+      padding: 0.5rem;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+    }
+    .nav-arrow:hover {
+      background-color: rgba(0,0,0,0.75);
+      transform: translateY(-50%) scale(1.05);
+    }
+    /* Layout styles for header, sidebar, etc. */
+    .prestige-header {
+      background: white;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      width: 100%;
+    }
+    .header-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .hamburger {
+      background-color: var(--maroon-light);
+      border: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .hamburger:hover {
+      background-color: var(--maroon);
+      transform: scale(1.02);
+    }
+    .prestige-sidebar {
+      position: fixed;
+      top: 0;
+      left: -300px;
+      width: 300px;
+      height: 100%;
+      background: white;
+      box-shadow: 2px 0 25px rgba(0,0,0,0.15);
+      transition: left 0.3s ease;
+      z-index: 1000;
+      padding: 1.5rem;
+      border-right: 1px solid var(--beige-deep);
+      overflow-y: auto;
+    }
+    .prestige-sidebar.open {
+      left: 0;
+    }
+    .sidebar-header {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1.5rem;
+    }
+    .close-sidebar-btn {
+      background: #f0f0f0;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      transition: all 0.2s;
+    }
+    .close-sidebar-btn:hover {
+      background: var(--maroon-light);
+      color: white;
+    }
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 1rem;
+      transition: all 0.2s;
+      color: #2d3e50;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .nav-link:hover, .nav-link.active {
+      background: var(--maroon-light);
+      color: white;
+    }
+    .prestige-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      display: none;
+    }
+    .prestige-overlay.active {
+      display: block;
+    }
+    .page-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      min-height: calc(100vh - 80px);
+      background-color: var(--beige);
+    }
+    .prestige-footer {
+      background: #1a1a2e;
+      color: #ccc;
+      padding: 2rem 1rem;
+      text-align: center;
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    // ----- Layout Component (shared header, sidebar, footer) -----
+   // ----- Layout Component (shared header, sidebar, oversized footer) -----
+const Layout = ({ children }) => {
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    const saved = localStorage.getItem('prestige_sidebar_open');
+    if (saved === 'true') setIsSidebarOpen(true);
+  }, []);
+
+  const openSidebar = () => {
+    setIsSidebarOpen(true);
+    localStorage.setItem('prestige_sidebar_open', 'true');
+  };
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+    localStorage.setItem('prestige_sidebar_open', 'false');
+  };
+  const toggleSidebar = () => {
+    if (isSidebarOpen) closeSidebar();
+    else openSidebar();
+  };
+
+  const navLinks = [
+  { name: 'Home', path: 'index.html', icon: <i className="fas fa-home"></i> },
+  { name: 'About', path: 'about.html', icon: <i className="fas fa-school"></i> },
+  { name: 'Academics', path: 'academics.html', icon: <i className="fas fa-graduation-cap"></i> },
+  { name: 'Admissions', path: 'admissions.html', icon: <i className="fas fa-file-alt"></i> },
+  { name: 'Achievements', path: 'achievements.html', icon: <i className="fas fa-trophy"></i> },
+  { name: 'Sports & Arts', path: 'sports-arts.html', icon: <i className="fas fa-futbol"></i> },
+  { name: 'Gallery', path: 'gallery.html', icon: <i className="fas fa-images"></i> },
+  { name: 'Community & Alumni', path: 'community.html', icon: <i className="fas fa-users"></i> },
+  { name: 'Donate', path: 'donate.html', icon: <i className="fas fa-hand-holding-heart"></i> },
+  { name: 'Contact', path: 'contact.html', icon: <i className="fas fa-envelope"></i> },
+  { name: 'Our Future', path: 'future.html', icon: <i className="fas fa-rocket"></i> }
+];
+
+  const currentPage = window.location.pathname.split('/').pop();
+
+  // Footer script (runs after footer is drawn)
+  React.useEffect(() => {
+    const backToTop = document.getElementById('backToTop');
+    if (backToTop) {
+      backToTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+    const subBtn = document.querySelector('footer button:not(#backToTop)');
+    if (subBtn) {
+      subBtn.addEventListener('click', (e) => {
+        const emailInput = subBtn.previousElementSibling;
+        if (emailInput && emailInput.value) {
+          alert(`Thank you for subscribing! We'll send news to ${emailInput.value}.`);
+          emailInput.value = '';
+        } else {
+          alert('Please enter a valid email address.');
+        }
+      });
+    }
+  }, []);
+
+  // The return statement MUST have a single parent element – we use <></> (Fragment)
+  return (
+    <>
+      {/* Header */}
+      <div className="prestige-header">
+  <div className="header-container">
+    <button className="hamburger" onClick={toggleSidebar}>☰</button>
+    <div className="flex items-center gap-3">
+      <img 
+        src="images/logo.png" 
+        alt="Prestige High School Logo" 
+        className="h-10 w-auto object-contain"
+      />
+      <div className="font-display text-2xl font-bold text-gray-800">Oscar Mpetha High School</div>
+    </div>
+    <div style={{ width: 48 }}></div>
+  </div>
+</div>
+      {/* Sidebar */}
+      <div className={`prestige-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+        <div className="sidebar-header">
+          <button className="close-sidebar-btn" onClick={closeSidebar}>✕</button>
+        </div>
+        <div className="nav-links">
+          {navLinks.map(link => (
+            <a
+              key={link.path}
+              href={link.path}
+              className={`nav-link ${currentPage === link.path ? 'active' : ''}`}
+            >
+              <span>{link.icon}</span> {link.name}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {/* Overlay */}
+      <div className={`prestige-overlay ${isSidebarOpen ? 'active' : ''}`} onClick={closeSidebar}></div>
+
+      {/* Main content */}
+      <main className="page-content">{children}</main>
+
+      {/* Oversized Footer */}
+      <footer className="relative bg-[#6B1D2D] text-[#F5F0E6] text-[#F5F0E6] pt-20 pb-10 border-t-4 border-[#B84A60]/50 shadow-2xl overflow-hidden mt-16">
+        {/* Animated glow line */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#B84A60] to-transparent animate-pulse"></div>
+
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          {/* Footer grid – same content as before */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
+            {/* Column 1: Logo & Identity */}
+            <div>
+             <div className="flex items-center gap-4 mb-8">
+  <div className="w-20 h-20 rounded-full border-2 border-[#F5CCA0] bg-[#6B1D2D]/40 backdrop-blur-sm flex items-center justify-center overflow-hidden shadow-[0_0_15px_rgba(245,204,160,0.3)]">
+    <img src="images/logo.png" alt="Oscar Mpetha Logo" className="w-12 h-12 object-contain" />
+  </div>
+  <div className="serif">
+    <h2 className="text-2xl sm:text-3xl font-black tracking-wide text-[#F5CCA0] drop-shadow-lg">
+      <span className="font-black">OSCAR MPETHA</span>
+      <br />
+      <span className="text-base sm:text-lg font-normal text-[#F5F0E6]">HIGH SCHOOL</span>
+    </h2>
+    <div className="text-xs tracking-wider opacity-80">EST. 1979 · NYANGA, CAPE FLATS</div>
+  </div>
+</div>
+              <p className="text-gray-300 text-sm leading-relaxed">A beacon of academic excellence, holistic development, and community spirit. Shaping future leaders since 1979.</p>
+              <div className="flex gap-4 mt-6">
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-facebook-f text-xl"></i></a>
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-twitter text-xl"></i></a>
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-instagram text-xl"></i></a>
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-youtube text-xl"></i></a>
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-linkedin-in text-xl"></i></a>
+              </div>
+            </div>
+
+            {/* Column 2: Quick Links */}
+            <div>
+              <h3 className="text-lg font-bold uppercase tracking-wider border-l-4 border-[#B84A60] pl-3 mb-5">Explore</h3>
+              <ul className="space-y-3 text-sm">
+                <li><a href="about.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> About Us</a></li>
+                <li><a href="academics.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Academics & Career Compass</a></li>
+                <li><a href="admissions.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Admissions</a></li>
+                <li><a href="achievements.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Achievements</a></li>
+                <li><a href="sports-arts.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Sports & Arts</a></li>
+                <li><a href="gallery.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Gallery</a></li>
+                <li><a href="future.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Our Future</a></li>
+              </ul>
+            </div>
+
+            {/* Column 3: Community & Support */}
+            <div>
+              <h3 className="text-lg font-bold uppercase tracking-wider border-l-4 border-[#B84A60] pl-3 mb-5">Community</h3>
+              <ul className="space-y-3 text-sm">
+                <li><a href="community-alumni.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-users"></i> Alumni & Community</a></li>
+                <li><a href="donate.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-hand-holding-heart"></i> Donate & Support</a></li>
+                <li><a href="contact.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-phone-alt"></i> Contact Us</a></li>
+                <li><a href="#" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-calendar-alt"></i> Events Calendar</a></li>
+              </ul>
+            </div>
+
+            {/* Column 4: Newsletter & Contact */}
+            <div>
+              <h3 className="text-lg font-bold uppercase tracking-wider border-l-4 border-[#B84A60] pl-3 mb-5">Connect</h3>
+              <div className="space-y-3 text-sm">
+                <p><i className="fas fa-map-marker-alt w-5 text-[#B84A60]"></i> 123 Academy Avenue, Prestige Heights, Johannesburg, 2196</p>
+                <p><i className="fas fa-phone-alt w-5 text-[#B84A60]"></i> +27 12 345 6789</p>
+                <p><i className="fas fa-envelope w-5 text-[#B84A60]"></i> info@prestigehigh.co.za</p>
+                <p><i className="fas fa-clock w-5 text-[#B84A60]"></i> Mon–Fri: 07:30 – 16:30</p>
+              </div>
+              <div className="mt-6">
+                <label className="block text-sm font-semibold mb-2">Subscribe to Our Newsletter</label>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input type="email" placeholder="Your email address" className="bg-white/10 border border-[#B84A60]/40 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-[#B84A60] w-full text-white placeholder-gray-400" />
+                  <button id="newsletterSubscribe" className="bg-[#B84A60] text-white font-bold px-5 py-2 rounded-full hover:bg-[#9E2A3E] transition shadow-md">Subscribe</button>
+                </div>
+                <p className="text-xs text-gray-400 mt-2">No spam, just monthly updates.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom bar */}
+          <div className="mt-16 pt-8 border-t border-[#B84A60]/30 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+            <div className="text-center md:text-left">
+              <p>© 2025 Prestige High School. All rights reserved. | PBO Section 18A | NPO 123-456</p>
+              <p class="text-xs opacity-70 mt-1"><p class="text-xs text-gray-400 mt-1">Designed with <i class="fas fa-heart text-[#B84A60]"></i> for excellence in education.</p> by AbaNtu Intelligence</p>
+
+            </div>
+            <div className="flex gap-6">
+              <a href="#" className="hover:text-[#B84A60] transition">Privacy Policy</a>
+              <a href="#" className="hover:text-[#B84A60] transition">Terms of Use</a>
+              <a href="#" className="hover:text-[#B84A60] transition">Accessibility</a>
+            </div>
+            <button id="backToTop" className="bg-[#B84A60] text-white w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition shadow-lg">
+              <i className="fas fa-arrow-up"></i>
+            </button>
+          </div>
+        </div>
+
+        {/* Decorative particles */}
+        <div className="absolute bottom-0 left-0 w-full h-20 pointer-events-none overflow-hidden">
+          <div className="absolute bottom-0 left-1/4 w-2 h-2 bg-[#B84A60] rounded-full animate-ping opacity-50"></div>
+          <div className="absolute bottom-2 left-1/2 w-1 h-1 bg-[#B84A60] rounded-full animate-pulse opacity-70"></div>
+          <div className="absolute bottom-4 left-3/4 w-1.5 h-1.5 bg-[#B84A60] rounded-full animate-bounce opacity-60"></div>
+        </div>
+      </footer>
+    </>
+  );
+};
+    // ----- Alumni spotlight data -----
+    const alumniSpotlights = [
+      { id: 1, type: "image", src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop", title: "Dr. Thandiwe Mbeki", description: "Class of 1998 | Renowned cardiac surgeon and founder of the Mbeki Heart Foundation. 'Prestige gave me the discipline to dream big.'", category: "Medicine", year: "1998" },
+      { id: 2, type: "image", src: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop", title: "Sipho Dlamini", description: "Class of 2005 | Award-winning architect behind the Green School Initiative. 'My design journey started in Mr. Khumalo's art class.'", category: "Architecture", year: "2005" },
+      { id: 3, type: "video", src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", poster: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop", title: "Naledi Mogale", description: "Class of 2010 | Tech entrepreneur, CEO of EduSpark. Shares her journey from Prestige to building a million-dollar ed-tech startup.", category: "Entrepreneurship", year: "2010" },
+      { id: 4, type: "image", src: "https://images.unsplash.com/photo-1580894732444-8ecded7900cd?w=400&h=400&fit=crop", title: "Priya Singh", description: "Class of 2012 | UN Human Rights Advocate. 'My debate coach taught me that my voice can change the world.'", category: "Law & Advocacy", year: "2012" },
+      { id: 5, type: "image", src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop", title: "Michael Thompson", description: "Class of 1995 | Olympic gold medalist (rowing). 'The perseverance I learned on the school rugby field carried me to the podium.'", category: "Sports", year: "1995" }
+    ];
+
+    // ----- Modal Component (unchanged) -----
+    const MediaModal = ({ isOpen, items, currentIndex, onClose, onNavigate }) => {
+      const currentItem = items[currentIndex];
+      React.useEffect(() => {
+        const handleKeyDown = (e) => {
+          if (!isOpen) return;
+          if (e.key === 'ArrowLeft') onNavigate('prev');
+          else if (e.key === 'ArrowRight') onNavigate('next');
+          else if (e.key === 'Escape') onClose();
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+      }, [isOpen, onNavigate, onClose]);
+      if (!isOpen || !currentItem) return null;
+      const handlePrev = (e) => { e.stopPropagation(); onNavigate('prev'); };
+      const handleNext = (e) => { e.stopPropagation(); onNavigate('next'); };
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay" onClick={onClose}>
+          <div className="modal-content max-w-4xl w-full bg-white rounded-2xl overflow-hidden shadow-2xl relative" onClick={(e) => e.stopPropagation()}>
+            <button onClick={onClose} className="absolute top-3 right-3 z-30 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <button onClick={handlePrev} className="nav-arrow left-4"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <button onClick={handleNext} className="nav-arrow right-4"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <div className="relative">
+              {currentItem.type === "image" ? (
+                <img src={currentItem.src} alt={currentItem.title} className="w-full max-h-[60vh] object-contain bg-black/10" />
+              ) : (
+                <video key={currentItem.src} className="w-full max-h-[60vh]" controls autoPlay poster={currentItem.poster}>
+                  <source src={currentItem.src} type="video/mp4" />
+                </video>
+              )}
+            </div>
+            <div className="p-6 bg-white">
+              <h3 className="text-2xl font-display font-bold text-gray-800">{currentItem.title}</h3>
+              <p className="text-gray-600 mt-2">{currentItem.description}</p>
+              <div className="mt-4 flex justify-between items-center">
+                <div className="flex gap-2">
+                  <span className="text-sm bg-maroon-light/10 px-3 py-1 rounded-full text-maroon-light">{currentItem.category}</span>
+                  <span className="text-sm bg-beige-deep/50 px-3 py-1 rounded-full text-gray-600">Class of {currentItem.year}</span>
+                </div>
+                <div className="text-xs text-gray-400">{currentIndex + 1} / {items.length}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // ----- Main Alumni Page Content (wrapped in Layout) -----
+    const AlumniContent = () => {
+      const [modalOpen, setModalOpen] = React.useState(false);
+      const [currentIndex, setCurrentIndex] = React.useState(0);
+      const openModal = (idx) => { setCurrentIndex(idx); setModalOpen(true); };
+      const closeModal = () => setModalOpen(false);
+      const handleNavigate = (dir) => {
+        setCurrentIndex(prev => {
+          if (dir === 'prev') return prev === 0 ? alumniSpotlights.length - 1 : prev - 1;
+          else return prev === alumniSpotlights.length - 1 ? 0 : prev + 1;
+        });
+      };
+
+      // CTA handlers (simulated alerts)
+      const handleDonateToFund = () => alert("Thank you for supporting the Alumni Fund! You will be redirected to our secure donation portal.");
+      const handleVolunteer = () => alert("Volunteer sign-up form will open. Join our mentorship or event committees.");
+      const handlePartnerWithUs = () => alert("Corporate partnership inquiry form opens. Let's build together.");
+      const handleShareStory = () => alert("We'd love to feature your story! Please email alumni@prestigehigh.co.za");
+
+      return (
+        <>
+          {/* Hero */}
+          <div className="relative bg-gradient-to-br from-[#F5EFE2] via-[#F5EFE2]/95 to-[#E2D4B6]/40 overflow-hidden">
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')] opacity-20"></div>
+            <div className="section-container relative z-10 text-center">
+              <div className="inline-block px-4 py-1 rounded-full bg-[#B84A60]/10 text-[#B84A60] font-semibold text-sm mb-6 tracking-wide">TOGETHER WE RISE</div>
+              <h1 className="text-5xl md:text-7xl font-display font-bold text-gray-800 leading-tight">
+                Community & <span className="text-[#B84A60]">Alumni</span>
+              </h1>
+              <div className="maroon-accent-line mx-auto mt-6"></div>
+              <p className="mt-6 max-w-2xl mx-auto text-gray-600 text-lg md:text-xl font-light">A lifelong family. Give back, connect, and help shape the next generation of leaders.</p>
+              <div className="flex flex-wrap justify-center gap-5 mt-10">
+                <button onClick={handleDonateToFund} className="btn-primary text-white font-bold py-3 px-8 rounded-full shadow-lg transition">💰 Alumni Fund for Learner Support</button>
+                <button onClick={handleVolunteer} className="btn-outline font-bold py-3 px-8 rounded-full shadow-md transition">🤝 Volunteer as Mentor</button>
+                <button onClick={handlePartnerWithUs} className="bg-white/80 hover:bg-white text-maroon-light font-semibold py-3 px-6 rounded-full shadow transition border border-beige-deep">🏗️ Partner in School Building</button>
+              </div>
+            </div>
+          </div>
+
+          {/* Alumni Fund Section */}
+          <div className="bg-white/50 py-16">
+            <div className="section-container !py-8">
+              <div className="grid md:grid-cols-2 gap-10 items-center">
+                <div>
+                  <span className="text-maroon-light font-semibold text-sm tracking-wide">SUPPORTING FUTURE LEADERS</span>
+                  <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-800 mt-2">Alumni Fund for Learner Support</h2>
+                  <div className="w-16 h-0.5 bg-maroon-light rounded-full my-4"></div>
+                  <p className="text-gray-600 leading-relaxed">The Alumni Fund provides financial assistance for tuition, textbooks, technology, and extracurricular access to talented learners who would otherwise not afford a Prestige education. Since 2010, over 200 students have graduated through this support.</p>
+                  <div className="mt-6 bg-beige-deep/30 p-4 rounded-xl">
+                    <p className="font-semibold text-gray-800">2025 Goal: R1,500,000</p>
+                    <div className="w-full bg-beige-deep rounded-full h-2.5 mt-2"><div className="bg-maroon-light h-2.5 rounded-full" style={{width: '68%'}}></div></div>
+                    <p className="text-sm text-gray-500 mt-2">R1,020,000 raised so far. Every contribution counts.</p>
+                  </div>
+                  <button onClick={handleDonateToFund} className="mt-6 btn-primary text-white font-semibold px-6 py-2 rounded-full">Donate Now →</button>
+                </div>
+                <div className="prestige-card p-6 text-center">
+                  <div className="text-5xl mb-3">🎓</div>
+                  <h3 className="text-xl font-display font-bold">Make a direct impact</h3>
+                  <p className="text-gray-500 text-sm mt-2">R500 covers one learner's stationery for a year. R5,000 sponsors a full sports kit. R50,000 transforms a classroom.</p>
+                  <div className="flex justify-center gap-2 mt-4"><span className="bg-beige-deep/50 px-3 py-1 rounded-full text-xs">Tax-deductible</span><span className="bg-beige-deep/50 px-3 py-1 rounded-full text-xs">100% to learners</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Alumni Spotlight Grid */}
+          <div className="section-container">
+            <div className="text-center max-w-3xl mx-auto mb-12">
+              <span className="text-maroon-light font-semibold text-sm bg-maroon-light/10 px-4 py-1 rounded-full">INSPIRING STORIES</span>
+              <h2 className="text-3xl md:text-4xl font-display font-bold mt-4 text-gray-800">Alumni Spotlight</h2>
+              <div className="maroon-accent-line mx-auto mt-3"></div>
+              <p className="text-gray-600">Meet some of our outstanding graduates who are making waves worldwide. Click on any card to learn more.</p>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {alumniSpotlights.map((alum, idx) => (
+                <div key={alum.id} onClick={() => openModal(idx)} className="prestige-card overflow-hidden cursor-pointer group transition-all">
+                  <div className="relative h-64 overflow-hidden">
+                    {alum.type === "image" ? (
+                      <img src={alum.src} alt={alum.title} className="w-full h-full object-cover transition duration-500 group-hover:scale-105" />
+                    ) : (
+                      <>
+                        <img src={alum.poster} alt={alum.title} className="w-full h-full object-cover transition duration-500 group-hover:scale-105" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40">
+                          <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center text-maroon-light"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <div className="p-5">
+                    <h3 className="font-display font-bold text-xl text-gray-800">{alum.title}</h3>
+                    <p className="text-sm text-maroon-light font-medium">{alum.category} | Class of {alum.year}</p>
+                    <p className="text-gray-500 text-sm mt-2 line-clamp-2">{alum.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="text-center mt-10">
+              <button onClick={handleShareStory} className="btn-outline px-6 py-2 rounded-full">✉️ Share Your Story →</button>
+            </div>
+          </div>
+
+          {/* Call to Action - Participate in School Building */}
+          <div className="bg-maroon-light/10 py-16">
+            <div className="section-container !py-8 text-center">
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-800">Help Build Our Future</h2>
+              <div className="maroon-accent-line mx-auto mt-3"></div>
+              <p className="text-gray-600 max-w-2xl mx-auto">Whether through capital campaigns, donating expertise, or contributing to infrastructure, your participation builds a stronger Prestige.</p>
+              <div className="flex flex-wrap justify-center gap-6 mt-8">
+                <button onClick={handlePartnerWithUs} className="btn-primary text-white font-semibold px-8 py-3 rounded-full shadow-lg">🏗️ Contribute to Building Fund</button>
+                <button onClick={handleVolunteer} className="bg-white text-maroon-light font-semibold px-8 py-3 rounded-full shadow border border-maroon-light">👥 Join Advisory Committee</button>
+                <button onClick={handleDonateToFund} className="bg-beige-deep text-gray-800 font-semibold px-8 py-3 rounded-full shadow">📘 Sponsor a Classroom</button>
+              </div>
+              <p className="text-sm text-gray-500 mt-6">All contributions are acknowledged on our donor wall and in annual reports.</p>
+            </div>
+          </div>
+
+          {/* Community Engagement Cards */}
+          <div className="section-container">
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="prestige-card p-6 text-center">
+                <div className="w-16 h-16 rounded-full bg-maroon-light/20 flex items-center justify-center text-3xl mx-auto mb-4">🌍</div>
+                <h3 className="font-display font-bold text-xl">Mentorship Program</h3>
+                <p className="text-gray-600 text-sm mt-2">Guide a current learner through career advice, study support, or life skills.</p>
+                <button onClick={handleVolunteer} className="mt-4 text-maroon-light font-medium text-sm">Sign up →</button>
+              </div>
+              <div className="prestige-card p-6 text-center">
+                <div className="w-16 h-16 rounded-full bg-maroon-light/20 flex items-center justify-center text-3xl mx-auto mb-4">🏅</div>
+                <h3 className="font-display font-bold text-xl">Annual Golf Day</h3>
+                <p className="text-gray-600 text-sm mt-2">Join alumni, parents, and staff for our fundraiser. Next event: 15 November 2025.</p>
+                <button onClick={handleDonateToFund} className="mt-4 text-maroon-light font-medium text-sm">Register interest →</button>
+              </div>
+              <div className="prestige-card p-6 text-center">
+                <div className="w-16 h-16 rounded-full bg-maroon-light/20 flex items-center justify-center text-3xl mx-auto mb-4">🎓</div>
+                <h3 className="font-display font-bold text-xl">Alumni Reunion 2025</h3>
+                <p className="text-gray-600 text-sm mt-2">Celebrate decades of excellence. Save the date: 6 December 2025.</p>
+                <button onClick={handleShareStory} className="mt-4 text-maroon-light font-medium text-sm">RSVP →</button>
+              </div>
+            </div>
+          </div>
+
+          <MediaModal isOpen={modalOpen} items={alumniSpotlights} currentIndex={currentIndex} onClose={closeModal} onNavigate={handleNavigate} />
+        </>
+      );
+    };
+
+    // Wrap everything in the Layout
+    const App = () => (
+      <Layout>
+        <AlumniContent />
+      </Layout>
+    );
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

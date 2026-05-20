@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Prestige High School — Academics & Career Pathways</title>
+  <!-- Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React & ReactDOM -->
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+  <style>
+    /* Custom theme: beige & maroon, plus layout styles */
+    :root {
+      --beige: #F5EFE2;
+      --beige-strong: #ECE0C7;
+      --beige-deep: #E2D4B6;
+      --maroon-light: #B84A60;
+      --maroon: #9E2A3E;
+      --maroon-deep: #7A1F2F;
+    }
+    body {
+      background-color: var(--beige);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    h1, h2, h3, h4, .font-display {
+      font-family: 'Playfair Display', serif;
+    }
+    .maroon-accent-line {
+      width: 5rem;
+      height: 0.25rem;
+      background-color: var(--maroon-light);
+      border-radius: 9999px;
+      margin-bottom: 1.5rem;
+    }
+    .prestige-card {
+      background-color: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(4px);
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      border: 1px solid var(--beige-deep);
+    }
+    .prestige-card:hover {
+      transform: translateY(-4px);
+      background-color: white;
+      box-shadow: 0 25px 35px -12px rgba(90, 30, 40, 0.15);
+    }
+    .section-container {
+      max-width: 1280px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+      padding-top: 5rem;
+      padding-bottom: 5rem;
+    }
+    @media (min-width: 768px) {
+      .section-container {
+        padding-top: 7rem;
+        padding-bottom: 7rem;
+      }
+    }
+    .caps-badge {
+      background: linear-gradient(135deg, var(--maroon-light) 0%, var(--maroon) 100%);
+    }
+    select, button {
+      transition: all 0.2s ease;
+    }
+    /* Layout styles */
+    .prestige-header {
+      background: white;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      width: 100%;
+    }
+    .header-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .hamburger {
+      background-color: var(--maroon-light);
+      border: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .hamburger:hover {
+      background-color: var(--maroon);
+      transform: scale(1.02);
+    }
+    .prestige-sidebar {
+      position: fixed;
+      top: 0;
+      left: -300px;
+      width: 300px;
+      height: 100%;
+      background: white;
+      box-shadow: 2px 0 25px rgba(0,0,0,0.15);
+      transition: left 0.3s ease;
+      z-index: 1000;
+      padding: 1.5rem;
+      border-right: 1px solid var(--beige-deep);
+      overflow-y: auto;
+    }
+    .prestige-sidebar.open {
+      left: 0;
+    }
+    .sidebar-header {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1.5rem;
+    }
+    .close-sidebar-btn {
+      background: #f0f0f0;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      transition: all 0.2s;
+    }
+    .close-sidebar-btn:hover {
+      background: var(--maroon-light);
+      color: white;
+    }
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 1rem;
+      transition: all 0.2s;
+      color: #2d3e50;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .nav-link:hover, .nav-link.active {
+      background: var(--maroon-light);
+      color: white;
+    }
+    .prestige-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      display: none;
+    }
+    .prestige-overlay.active {
+      display: block;
+    }
+    .page-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      min-height: calc(100vh - 80px);
+      background-color: var(--beige);
+    }
+    .prestige-footer {
+      background: #1a1a2e;
+      color: #ccc;
+      padding: 2rem 1rem;
+      text-align: center;
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    // ----- Layout Component (shared header, sidebar, footer) -----
+    const Layout = ({ children }) => {
+      const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+
+      React.useEffect(() => {
+        const saved = localStorage.getItem('prestige_sidebar_open');
+        if (saved === 'true') setIsSidebarOpen(true);
+      }, []);
+
+      const openSidebar = () => {
+        setIsSidebarOpen(true);
+        localStorage.setItem('prestige_sidebar_open', 'true');
+      };
+      const closeSidebar = () => {
+        setIsSidebarOpen(false);
+        localStorage.setItem('prestige_sidebar_open', 'false');
+      };
+      const toggleSidebar = () => {
+        if (isSidebarOpen) closeSidebar();
+        else openSidebar();
+      };
+
+      const navLinks = [
+  { name: 'Home', path: 'index.html', icon: <i className="fas fa-home"></i> },
+  { name: 'About', path: 'about.html', icon: <i className="fas fa-school"></i> },
+  { name: 'Academics', path: 'academics.html', icon: <i className="fas fa-graduation-cap"></i> },
+  { name: 'Admissions', path: 'admissions.html', icon: <i className="fas fa-file-alt"></i> },
+  { name: 'Achievements', path: 'achievements.html', icon: <i className="fas fa-trophy"></i> },
+  { name: 'Sports & Arts', path: 'sports-arts.html', icon: <i className="fas fa-futbol"></i> },
+  { name: 'Gallery', path: 'gallery.html', icon: <i className="fas fa-images"></i> },
+  { name: 'Community & Alumni', path: 'community.html', icon: <i className="fas fa-users"></i> },
+  { name: 'Donate', path: 'donate.html', icon: <i className="fas fa-hand-holding-heart"></i> },
+  { name: 'Contact', path: 'contact.html', icon: <i className="fas fa-envelope"></i> },
+  { name: 'Our Future', path: 'future.html', icon: <i className="fas fa-rocket"></i> }
+];
+
+      const currentPage = window.location.pathname.split('/').pop();
+
+      return (
+        <>
+          <div className="prestige-header">
+  <div className="header-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <button className="hamburger" onClick={toggleSidebar}>☰</button>
+    
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <img src="images/logo.png" alt="Prestige High School" style={{ height: '40px', width: 'auto' }} />
+      <span className="font-display text-2xl font-bold text-gray-800" style={{ whiteSpace: 'nowrap' }}>Oscar Mpetha High School</span>
+    </div>
+    
+    <div style={{ width: 48 }}></div>
+  </div>
+</div>
+
+          <div className={`prestige-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+            <div className="sidebar-header">
+              <button className="close-sidebar-btn" onClick={closeSidebar}>✕</button>
+            </div>
+            <div className="nav-links">
+              {navLinks.map(link => (
+                <a
+                  key={link.path}
+                  href={link.path}
+                  className={`nav-link ${currentPage === link.path ? 'active' : ''}`}
+                >
+                  <span>{link.icon}</span> {link.name}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div className={`prestige-overlay ${isSidebarOpen ? 'active' : ''}`} onClick={closeSidebar}></div>
+
+          <main className="page-content">{children}</main>
+
+          {/* ===== OVERSIZED FUTURISTIC FOOTER ===== */}
+      <footer className="relative bg-[#6B1D2D] text-[#F5F0E6] text-[#F5F0E6] pt-20 pb-10 border-t-4 border-[#B84A60]/50 shadow-2xl overflow-hidden mt-16">
+        {/* Animated glow line */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#B84A60] to-transparent animate-pulse"></div>
+
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          {/* Main footer grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
+            
+            {/* Column 1: School Identity & Logo */}
+            <div>
+             <div className="flex items-center gap-4 mb-8">
+  <div className="w-20 h-20 rounded-full border-2 border-[#F5CCA0] bg-[#6B1D2D]/40 backdrop-blur-sm flex items-center justify-center overflow-hidden shadow-[0_0_15px_rgba(245,204,160,0.3)]">
+    <img src="images/logo.png" alt="Oscar Mpetha Logo" className="w-12 h-12 object-contain" />
+  </div>
+  <div className="serif">
+    <h2 className="text-2xl sm:text-3xl font-black tracking-wide text-[#F5CCA0] drop-shadow-lg">
+      <span className="font-black">OSCAR MPETHA</span>
+      <br />
+      <span className="text-base sm:text-lg font-normal text-[#F5F0E6]">HIGH SCHOOL</span>
+    </h2>
+    <div className="text-xs tracking-wider opacity-80">EST. 1979 · NYANGA, CAPE FLATS</div>
+  </div>
+</div>
+              <p className="text-gray-300 text-sm leading-relaxed">A beacon of academic excellence, holistic development, and community spirit. Shaping future leaders since 1965.</p>
+              <div className="flex gap-4 mt-6">
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-facebook-f text-xl"></i></a>
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-twitter text-xl"></i></a>
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-instagram text-xl"></i></a>
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-youtube text-xl"></i></a>
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-linkedin-in text-xl"></i></a>
+              </div>
+            </div>
+
+            {/* Column 2: Quick Links */}
+            <div>
+              <h3 className="text-lg font-bold uppercase tracking-wider border-l-4 border-[#B84A60] pl-3 mb-5">Explore</h3>
+              <ul className="space-y-3 text-sm">
+                <li><a href="about.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> About Us</a></li>
+                <li><a href="academics.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Academics & Career Compass</a></li>
+                <li><a href="admissions.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Admissions</a></li>
+                <li><a href="achievements.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Achievements</a></li>
+                <li><a href="sports-arts.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Sports & Arts</a></li>
+                <li><a href="gallery.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Gallery</a></li>
+                <li><a href="future.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Our Future</a></li>
+              </ul>
+            </div>
+
+            {/* Column 3: Community & Support */}
+            <div>
+              <h3 className="text-lg font-bold uppercase tracking-wider border-l-4 border-[#B84A60] pl-3 mb-5">Community</h3>
+              <ul className="space-y-3 text-sm">
+                <li><a href="community-alumni.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-users"></i> Alumni & Community</a></li>
+                <li><a href="donate.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-hand-holding-heart"></i> Donate & Support</a></li>
+                <li><a href="contact.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-phone-alt"></i> Contact Us</a></li>
+                <li><a href="#" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-calendar-alt"></i> Events Calendar</a></li>
+                <li><a href="#" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-graduation-cap"></i> Alumni Registration</a></li>
+                <li><a href="#" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chalkboard-user"></i> Parent Portal</a></li>
+              </ul>
+            </div>
+
+            {/* Column 4: Newsletter & Contact */}
+            <div>
+              <h3 className="text-lg font-bold uppercase tracking-wider border-l-4 border-[#B84A60] pl-3 mb-5">Connect</h3>
+              <div className="space-y-3 text-sm">
+                <p><i className="fas fa-map-marker-alt w-5 text-[#B84A60]"></i> 123 Academy Avenue, Prestige Heights, Johannesburg, 2196</p>
+                <p><i className="fas fa-phone-alt w-5 text-[#B84A60]"></i> +27 12 345 6789</p>
+                <p><i className="fas fa-envelope w-5 text-[#B84A60]"></i> info@prestigehigh.co.za</p>
+                <p><i className="fas fa-clock w-5 text-[#B84A60]"></i> Mon–Fri: 07:30 – 16:30</p>
+              </div>
+              <div className="mt-6">
+                <label className="block text-sm font-semibold mb-2">Subscribe to Our Newsletter</label>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input type="email" placeholder="Your email address" className="bg-white/10 border border-[#B84A60]/40 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-[#B84A60] w-full text-white placeholder-gray-400" />
+                  <button id="newsletterSubscribe" className="bg-[#B84A60] text-white font-bold px-5 py-2 rounded-full hover:bg-[#9E2A3E] transition shadow-md">Subscribe</button>
+                </div>
+                <p className="text-xs text-gray-400 mt-2">No spam, just monthly updates.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom bar – legal & back to top */}
+          <div className="mt-16 pt-8 border-t border-[#B84A60]/30 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+            <div className="text-center md:text-left">
+              <p>© 2025 Prestige High School. All rights reserved. | PBO Section 18A | NPO 123-456</p>
+              <p class="text-xs opacity-70 mt-1"><p class="text-xs text-gray-400 mt-1">Designed with <i class="fas fa-heart text-[#B84A60]"></i> for excellence in education.</p> by AbaNtu Intelligence</p>
+
+            </div>
+            <div className="flex gap-6">
+              <a href="#" className="hover:text-[#B84A60] transition">Privacy Policy</a>
+              <a href="#" className="hover:text-[#B84A60] transition">Terms of Use</a>
+              <a href="#" className="hover:text-[#B84A60] transition">Accessibility</a>
+            </div>
+            <button id="backToTop" className="bg-[#B84A60] text-white w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition shadow-lg">
+              <i className="fas fa-arrow-up"></i>
+            </button>
+          </div>
+        </div>
+
+        {/* Decorative particles */}
+        <div className="absolute bottom-0 left-0 w-full h-20 pointer-events-none overflow-hidden">
+          <div className="absolute bottom-0 left-1/4 w-2 h-2 bg-[#B84A60] rounded-full animate-ping opacity-50"></div>
+          <div className="absolute bottom-2 left-1/2 w-1 h-1 bg-[#B84A60] rounded-full animate-pulse opacity-70"></div>
+          <div className="absolute bottom-4 left-3/4 w-1.5 h-1.5 bg-[#B84A60] rounded-full animate-bounce opacity-60"></div>
+        </div>
+      </footer>
+    </>
+      );
+    };
+
+    // ---------- Career Database (unchanged) ----------
+    const careerDatabase = {
+      doctor: {
+        name: "Medical Doctor",
+        subjects: ["English (Home or First Additional)", "Mathematics (Pure)", "Life Sciences", "Physical Sciences"],
+        aps: "APS 38+ (with 80%+ in Maths & Sciences recommended)",
+        additional: "NBTs, HPCSA registration, MBChB degree (6 years), internship & community service.",
+        pathway: "Bachelor's degree with strong focus on Health Sciences.",
+        subjectsRequired: "Mathematics, Physical Sciences, Life Sciences, English"
+      },
+      engineer: {
+        name: "Engineer (Civil/Mechanical/Electrical)",
+        subjects: ["English", "Mathematics (Pure)", "Physical Sciences", "Additional language"],
+        aps: "APS 36+ (minimum 70% in Maths & Physical Sciences)",
+        additional: "BEng or BSc Eng degree (4 years). ECSA registration for professional engineer.",
+        pathway: "Bachelor's in Engineering — university route.",
+        subjectsRequired: "Mathematics, Physical Sciences, English"
+      },
+      lawyer: {
+        name: "Attorney / Advocate",
+        subjects: ["English (Home Language)", "Any other 3 subjects (History, Business Studies, etc.)", "Mathematics Literacy acceptable"],
+        aps: "APS 33+ (strong English marks essential: 70%+)",
+        additional: "LLB degree (4 years), then admission exams, articles of clerkship or pupillage.",
+        pathway: "Bachelor of Laws (LLB) — university.",
+        subjectsRequired: "English (Home Language) is critical; no specific science/maths required but strong reading & reasoning."
+      },
+      accountant: {
+        name: "Chartered Accountant (CA)",
+        subjects: ["English", "Mathematics (Pure)", "Accounting", "Business Studies / Economics (recommended)"],
+        aps: "APS 38+ (Mathematics 70%+, Accounting 70%+)",
+        additional: "BCom Accounting (3 years), then PGDA (1 year), then 3 years articles & ITC/APC exams.",
+        pathway: "Bachelor of Commerce in Accounting — university.",
+        subjectsRequired: "Mathematics, Accounting, English"
+      },
+      itSpecialist: {
+        name: "IT Specialist / Software Developer",
+        subjects: ["English", "Mathematics (Pure)", "Information Technology (or CAT)", "Physical Sciences (advantageous)"],
+        aps: "APS 34+ (Maths 60%+)",
+        additional: "BSc Computer Science / BEng (Software) or diplomas; industry certifications (AWS, Cisco) helpful.",
+        pathway: "University degree or Higher Certificate/Diploma at a university of technology.",
+        subjectsRequired: "Mathematics is essential; IT/CAT beneficial."
+      },
+      teacher: {
+        name: "Educator (High School Teacher)",
+        subjects: ["English", "Mathematics / Maths Lit", "Relevant teaching subjects (e.g., History, Languages, Sciences)"],
+        aps: "APS 30+ (Bachelor of Education) or any degree + PGCE",
+        additional: "BEd (4 years) or relevant degree + PGCE (1 year). SACE registration.",
+        pathway: "Bachelor of Education or Postgraduate Certificate in Education.",
+        subjectsRequired: "Dependent on phase: for FET, two school subjects at 2nd year university level."
+      },
+      psychologist: {
+        name: "Clinical / Educational Psychologist",
+        subjects: ["English", "Mathematics / Maths Lit", "Life Sciences or Psychology (if offered)", "Life Orientation"],
+        aps: "APS 35+ (strong English & academic record)",
+        additional: "BPsych (4 years) or BA + Honours (Psychology) + Master's (Clinical/Educational) + internship + board exam.",
+        pathway: "Master's degree in Psychology — highly competitive.",
+        subjectsRequired: "English is critical; Mathematics or Maths Lit accepted; Life Sciences helpful."
+      },
+      architect: {
+        name: "Architect",
+        subjects: ["English", "Mathematics (Pure)", "Physical Sciences / Art / Design", "Visual Arts (recommended)"],
+        aps: "APS 34+ (Maths 60%+)",
+        additional: "Bachelor of Architectural Studies (3 years) + Master of Architecture (2 years), then professional practice exam.",
+        pathway: "Professional degree in Architecture (SACAP registration).",
+        subjectsRequired: "Mathematics, Physical Sciences or Design, Visual Arts beneficial."
+      }
+    };
+
+    const CareerGuidance = () => {
+      const [selectedCareer, setSelectedCareer] = React.useState("doctor");
+      const career = careerDatabase[selectedCareer];
+
+      const handleCareerChange = (e) => {
+        setSelectedCareer(e.target.value);
+      };
+
+      return (
+        <div className="prestige-card p-6 md:p-8 rounded-2xl">
+          <h3 className="text-2xl font-display font-bold text-gray-800 mb-2">🎯 Career Compass – Self-Help Tool</h3>
+          <p className="text-gray-500 mb-6">Select any career below to see the exact subject requirements, APS, and study pathway aligned with CAPS & South African higher education.</p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center mb-8">
+            <label className="text-gray-700 font-semibold text-lg">I want to become a:</label>
+            <select 
+              value={selectedCareer} 
+              onChange={handleCareerChange}
+              className="p-3 pr-8 rounded-xl border border-beige-deep bg-white/70 focus:outline-none focus:ring-2 focus:ring-maroon-light/50 text-gray-800 font-medium"
+            >
+              {Object.entries(careerDatabase).map(([key, val]) => (
+                <option key={key} value={key}>{val.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="bg-white/60 rounded-xl p-5 border-l-8 border-maroon-light shadow-sm">
+            <div className="flex flex-wrap justify-between items-start gap-2 mb-4">
+              <h4 className="text-xl font-display font-bold text-gray-800">{career.name}</h4>
+              <span className="text-xs bg-beige-deep/50 px-3 py-1 rounded-full text-maroon-dark font-mono">CAPS Aligned</span>
+            </div>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <div className="flex items-center gap-2 mb-2"><span className="w-2 h-2 bg-maroon-light rounded-full"></span><span className="font-bold text-gray-700">📚 Required Subjects (NSC)</span></div>
+                <ul className="list-disc list-inside text-gray-600 ml-2 space-y-1">
+                  {career.subjects.map((subj, idx) => <li key={idx}>{subj}</li>)}
+                </ul>
+                <p className="mt-3 text-sm text-gray-500 italic">Minimum achievement: <span className="font-medium text-gray-700">Bachelor's Degree pass</span> required for university.</p>
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-2"><span className="w-2 h-2 bg-maroon-light rounded-full"></span><span className="font-bold text-gray-700">🎓 APS & Entry Requirements</span></div>
+                <p className="text-gray-700"><span className="font-semibold">APS Score:</span> {career.aps}</p>
+                <p className="text-gray-700 mt-1"><span className="font-semibold">Critical Subjects:</span> {career.subjectsRequired}</p>
+                <p className="text-gray-600 text-sm mt-2"><span className="font-semibold">🔹 Pathway:</span> {career.pathway}</p>
+                <p className="text-gray-600 text-sm mt-1">{career.additional}</p>
+              </div>
+            </div>
+          </div>
+          <div className="mt-5 text-xs text-center text-gray-400 border-t border-beige-deep pt-4">
+            *The above reflects typical university entrance requirements. Always verify with specific institutions.
+          </div>
+        </div>
+      );
+    };
+
+    // Main Academics Content (wrapped in Layout)
+    const AcademicsContent = () => {
+      return (
+        <>
+          {/* Hero */}
+          <div className="relative bg-gradient-to-br from-[#F5EFE2] via-[#F5EFE2]/95 to-[#E2D4B6]/40 overflow-hidden">
+            <div className="absolute inset-0 bg-[url('')] opacity-20"></div>
+            
+            <div className="section-container relative z-10 text-center">
+              <div className="inline-block px-4 py-1 rounded-full bg-[#B84A60]/10 text-[#B84A60] font-semibold text-sm mb-6 tracking-wide">ACADEMIC EXCELLENCE</div>
+              <h1 className="text-5xl md:text-7xl font-display font-bold text-gray-800 leading-tight">
+                Academic  <span className="text-[#B84A60]"> Pathways</span>
+              </h1>
+              <div className="maroon-accent-line mx-auto mt-6"></div>
+              <p className="mt-6 max-w-2xl mx-auto text-gray-600 text-lg md:text-xl font-light">Rigorous CAPS curriculum • University pathways • Career guidance to help you choose wisely.</p>
+            </div>
+          </div>
+
+          {/* CAPS & Academic Philosophy */}
+          <div className="bg-white/40">
+            <div className="section-container">
+              <div className="flex flex-col lg:flex-row gap-12 items-center">
+                <div className="lg:w-1/2 space-y-5">
+                  <span className="caps-badge text-white text-xs font-bold px-3 py-1 rounded-full inline-block">CURRICULUM</span>
+                  <h2 className="text-4xl font-display font-bold text-gray-800">The CAPS Framework</h2>
+                  <div className="w-16 h-0.5 bg-[#B84A60] rounded-full"></div>
+                  <p className="text-gray-700 leading-relaxed">The Curriculum and Assessment Policy Statement (CAPS) is the national curriculum for Grades R–12 in South Africa. At Prestige High School, we deliver CAPS with enriched practical applications, ensuring every learner achieves the <strong>National Senior Certificate (NSC)</strong> — the gateway to higher education and careers.</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex items-start gap-3"><span className="text-[#B84A60] text-xl">✓</span><span className="text-sm text-gray-600">Clear subject content & pacing</span></div>
+                    <div className="flex items-start gap-3"><span className="text-[#B84A60] text-xl">✓</span><span className="text-sm text-gray-600">Continuous & summative assessment</span></div>
+                    <div className="flex items-start gap-3"><span className="text-[#B84A60] text-xl">✓</span><span className="text-sm text-gray-600">Three streams: Sciences, Commerce, Humanities</span></div>
+                    <div className="flex items-start gap-3"><span className="text-[#B84A60] text-xl">✓</span><span className="text-sm text-gray-600">University exemption (Bachelor's pass) guidance</span></div>
+                  </div>
+                </div>
+                <div className="lg:w-1/2 prestige-card p-6 text-center">
+                  <div className="bg-beige-deep/30 p-4 rounded-2xl">
+                    <h3 className="font-display text-2xl font-semibold text-gray-800">NSC Subjects Groups</h3>
+                    <div className="grid grid-cols-2 gap-2 mt-3 text-left text-sm">
+                      <div><span className="font-bold">Compulsory:</span> Home Language, First Additional Language, Mathematics/Maths Lit, Life Orientation</div>
+                      <div><span className="font-bold">Electives (choose 3):</span> Physical Sciences, Life Sciences, Accounting, History, Geography, Business Studies, IT, Economics, Visual Arts, etc.</div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-3">Learners choose subjects based on career aspirations — our academic counselors assist from Grade 9.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* High School & University Pathways */}
+          <div className="bg-[#ECE0C7]/30 py-16">
+            <div className="section-container">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-800">From High School to Higher Education</h2>
+                <div className="maroon-accent-line mx-auto mt-3"></div>
+                <p className="text-gray-600 max-w-2xl mx-auto">Our structured pathways guide you from Grade 10 subject choices through to university, college, or career entry.</p>
+              </div>
+              <div className="grid md:grid-cols-3 gap-8">
+                <div className="prestige-card p-6 text-center">
+                  <div className="w-14 h-14 rounded-full bg-maroon-light/20 flex items-center justify-center text-2xl mx-auto mb-4">📘</div>
+                  <h3 className="text-xl font-display font-bold">FET Phase (Gr 10–12)</h3>
+                  <p className="text-gray-500 text-sm mt-2">Choose from subject packages: Science, Commerce, or Humanities. Start building career-focused knowledge.</p>
+                </div>
+                <div className="prestige-card p-6 text-center">
+                  <div className="w-14 h-14 rounded-full bg-maroon-light/20 flex items-center justify-center text-2xl mx-auto mb-4">🎓</div>
+                  <h3 className="text-xl font-display font-bold">University Entrance</h3>
+                  <p className="text-gray-500 text-sm mt-2">Bachelor's Degree Pass (4 recognised subjects ≥ 50% in home language, 40% in other three). APS scores per programme.</p>
+                </div>
+                <div className="prestige-card p-6 text-center">
+                  <div className="w-14 h-14 rounded-full bg-maroon-light/20 flex items-center justify-center text-2xl mx-auto mb-4">⚙️</div>
+                  <h3 className="text-xl font-display font-bold">TVET & Work</h3>
+                  <p className="text-gray-500 text-sm mt-2">Vocational certificates, diplomas, and artisan training (NC(V) or NATED programmes). Industry partnerships.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Career Guidance Interactive Tool */}
+          <div className="section-container pt-0">
+            <div className="max-w-4xl mx-auto">
+              <CareerGuidance />
+            </div>
+          </div>
+
+          {/* Additional: Subject Choice Advice */}
+          <div className="bg-white/60 border-y border-beige-deep/40">
+            <div className="section-container">
+              <div className="text-center max-w-3xl mx-auto">
+                <h2 className="text-3xl font-display font-bold text-gray-800">Need help choosing subjects?</h2>
+                <div className="maroon-accent-line mx-auto my-4"></div>
+                <p className="text-gray-600 mb-6">Our academic advisors use career-mapping software to match your interests, strengths, and goals to the perfect Grade 10-12 subject package — aligned with university entrance requirements.</p>
+                <button className="bg-maroon-light hover:bg-maroon text-beige font-semibold py-3 px-8 rounded-full transition shadow-md">Book Career Guidance Session →</button>
+              </div>
+            </div>
+          </div>
+        </>
+      );
+    };
+
+
+    
+    const App = () => (
+      <Layout>
+        <AcademicsContent />
+      </Layout>
+    );
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

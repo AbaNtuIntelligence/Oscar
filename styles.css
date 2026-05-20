@@ -1,0 +1,172 @@
+/* layout.css – shared header, sidebar, footer styles */
+:root {
+    --beige: #F5EFE2;
+    --beige-strong: #ECE0C7;
+    --beige-deep: #E2D4B6;
+    --maroon-light: #B84A60;
+    --maroon: #9E2A3E;
+    --maroon-deep: #7A1F2F;
+}
+
+/* Global reset & base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    background-color: var(--beige);
+    font-family: 'Inter', sans-serif;
+}
+.font-display, h1, h2, h3, h4 {
+    font-family: 'Playfair Display', serif;
+}
+
+/* Header */
+.prestige-header {
+    background: white;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    width: 100%;
+}
+.header-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Hamburger – guaranteed visible */
+.hamburger {
+    background-color: var(--maroon-light);
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.hamburger:hover {
+    background-color: var(--maroon);
+    transform: scale(1.02);
+}
+
+/* Sidebar */
+.prestige-sidebar {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 300px;
+    height: 100%;
+    background: white;
+    box-shadow: 2px 0 25px rgba(0,0,0,0.15);
+    transition: left 0.3s ease;
+    z-index: 1000;
+    padding: 1.5rem;
+    border-right: 1px solid var(--beige-deep);
+    overflow-y: auto;
+}
+.prestige-sidebar.open {
+    left: 0;
+}
+
+/* Overlay */
+.prestige-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    display: none;
+}
+.prestige-overlay.active {
+    display: block;
+}
+
+/* Sidebar links */
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 1rem;
+    transition: all 0.2s;
+    color: #2d3e50;
+    text-decoration: none;
+    font-weight: 500;
+}
+.nav-link:hover, .nav-link.active {
+    background: var(--maroon-light);
+    color: white;
+}
+
+/* Close button */
+.close-sidebar-btn {
+    background: #f0f0f0;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    transition: all 0.2s;
+}
+.close-sidebar-btn:hover {
+    background: var(--maroon-light);
+    color: white;
+}
+
+/* Footer */
+.prestige-footer {
+    background: #1a1a2e;
+    color: #ccc;
+    padding: 2rem 1rem;
+    text-align: center;
+    margin-top: 3rem;
+}
+
+/* Page content wrapper */
+.page-content {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    min-height: calc(100vh - 80px);
+}
+
+/* Reusable card style */
+.prestige-card {
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(4px);
+    border-radius: 1.5rem;
+    box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid var(--beige-deep);
+    padding: 1.5rem;
+}
+.prestige-card:hover {
+    transform: translateY(-4px);
+    background-color: white;
+}
+.maroon-accent-line {
+    width: 5rem;
+    height: 0.25rem;
+    background-color: var(--maroon-light);
+    border-radius: 9999px;
+    margin-bottom: 1.5rem;
+}

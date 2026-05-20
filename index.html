@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Oscar Mpetha High | Full‑Screen Nav | Beige & Maroon</title>
+  <!-- Tailwind CSS + Fonts + Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* Custom 3D cube styles (unchanged) */
+    body { font-family: 'Inter', sans-serif; }
+    .serif { font-family: 'Cormorant Garamond', serif; }
+    .cube-card {
+      width: 260px;
+      height: 260px;
+      position: relative;
+      cursor: pointer;
+    }
+    .cube {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 1.1s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    }
+    .cube-card:hover .cube {
+      transform: rotateX(360deg) rotateY(360deg);
+    }
+    .face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 25px -12px rgba(107, 29, 45, 0.3);
+      backface-visibility: visible;
+    }
+    .front  { transform: rotateY(0deg) translateZ(130px); }
+    .back   { transform: rotateY(180deg) translateZ(130px); }
+    .right  { transform: rotateY(90deg) translateZ(130px); }
+    .left   { transform: rotateY(-90deg) translateZ(130px); }
+    .top    { transform: rotateX(90deg) translateZ(130px); }
+    .bottom { transform: rotateX(-90deg) translateZ(130px); }
+    .face img, .face video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+    .face-content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 1.25rem;
+      background: rgba(107, 29, 45, 0.7);
+      backdrop-filter: blur(2px);
+      color: #F5F0E6;
+      transition: 0.2s;
+    }
+    .face-content.light {
+      background: rgba(245, 240, 230, 0.85);
+      color: #6B1D2D;
+    }
+    .face-content i {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .face-content h3 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 0.25rem;
+    }
+    .face-content p {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    @media (max-width: 700px) {
+      .cube-card { width: 220px; height: 220px; }
+      .front  { transform: rotateY(0deg) translateZ(110px); }
+      .back   { transform: rotateY(180deg) translateZ(110px); }
+      .right  { transform: rotateY(90deg) translateZ(110px); }
+      .left   { transform: rotateY(-90deg) translateZ(110px); }
+      .top    { transform: rotateX(90deg) translateZ(110px); }
+      .bottom { transform: rotateX(-90deg) translateZ(110px); }
+      .face-content i { font-size: 2rem; }
+    }
+    /* Full-screen nav overlay (sliding from top) */
+    .fullscreen-nav {
+      position: fixed;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #6B1D2D;
+      z-index: 100;
+      transition: top 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      overflow-y: auto;
+      padding: 2rem 1.5rem;
+    }
+    .fullscreen-nav.open {
+      top: 0;
+    }
+    .nav-link-main {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #F5F0E6;
+      border-bottom: 2px solid #F5F0E6;
+      display: inline-block;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      font-family: 'Cormorant Garamond', serif;
+    }
+    .nav-sub-link {
+      display: block;
+      color: #F5F0E6;
+      font-size: 1.1rem;
+      padding: 0.5rem 0 0.5rem 1rem;
+      border-left: 2px solid #F5F0E6;
+      margin-left: 0.5rem;
+      transition: 0.2s;
+    }
+    .nav-sub-link:hover {
+      background: rgba(245, 240, 230, 0.2);
+      padding-left: 1.5rem;
+    }
+    .close-nav-btn {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      font-size: 2rem;
+      color: #F5F0E6;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .close-nav-btn:hover {
+      transform: scale(1.1);
+      color: #F5F0E6;
+    }
+    @media (min-width: 768px) {
+      .nav-link-main { font-size: 2.5rem; }
+      .nav-sub-link { font-size: 1.3rem; padding: 0.75rem 0 0.75rem 1.5rem; }
+    }
+      body {
+      font-family: 'Inter', sans-serif;
+    }
+    .logo-font {
+      font-family: 'Cormorant Garamond', serif;
+    }
+    .cube-card {
+      width: 260px;
+      height: 260px;
+      position: relative;
+      cursor: pointer;
+    }
+    .cube {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 1.1s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    }
+    .cube-card:hover .cube {
+      transform: rotateX(360deg) rotateY(360deg);
+    }
+    .face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 25px -12px rgba(107, 29, 45, 0.3);
+      backface-visibility: visible;
+    }
+    /* Face positions with translateZ */
+    .front  { transform: rotateY(0deg) translateZ(130px); }
+    .back   { transform: rotateY(180deg) translateZ(130px); }
+    .right  { transform: rotateY(90deg) translateZ(130px); }
+    .left   { transform: rotateY(-90deg) translateZ(130px); }
+    .top    { transform: rotateX(90deg) translateZ(130px); }
+    .bottom { transform: rotateX(-90deg) translateZ(130px); }
+    /* Full media inside faces */
+    .face img, .face video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+/* Force sharp rendering on all cube media */
+.face img, .face video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: crisp-edges;        /* for images */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
+  backface-visibility: hidden;         /* prevents subpixel blur */
+}
+
+/* The overlay – no blur, optional opacity reduction for more clarity */
+.face-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1.25rem;
+  background: rgba(107, 29, 45, 0.65);  /* solid overlay, no blur */
+  color: #F5F0E6;
+  transition: 0.2s;
+}
+.face-content.light {
+  background: rgba(245, 240, 230, 0.85);
+  color: #6B1D2D;
+}
+.face-content i {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+.face-content h3 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+}
+.face-content p {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+    @media (max-width: 700px) {
+      .cube-card { width: 220px; height: 220px; }
+      .front  { transform: rotateY(0deg) translateZ(110px); }
+      .back   { transform: rotateY(180deg) translateZ(110px); }
+      .right  { transform: rotateY(90deg) translateZ(110px); }
+      .left   { transform: rotateY(-90deg) translateZ(110px); }
+      .top    { transform: rotateX(90deg) translateZ(110px); }
+      .bottom { transform: rotateX(-90deg) translateZ(110px); }
+      .face-content i { font-size: 2rem; }
+      .face-content h3 { font-size: 1.1rem; }
+    }
+    
+  </style>
+</head>
+<body class="bg-[#F5F0E6]">
+
+  <!-- ========== FULLSCREEN VIDEO HERO ========== -->
+<div class="relative h-screen w-full overflow-hidden">
+  <!-- Background Video -->
+  <video autoplay muted loop playsinline class="absolute top-0 left-0 w-full h-full object-cover z-0">
+    <source src="images/mpetha.mp4" type="video/mp4">
+    <!-- Fallback image -->
+    <img src="images/mpetha-fallback.jpg" alt="Oscar Mpetha High School">
+  </video>
+
+  <!-- Cutting‑edge Linear Gradient Overlay (maroon → dark bronze → transparent) -->
+  <div class="absolute top-0 left-0 w-full h-full z-10 bg-gradient-to-br from-[#6B1D2D]/90 via-[#4A1220]/70 to-[#2A0A10]/40 mix-blend-multiply"></div>
+  <!-- Extra futuristic diagonal glow layer -->
+  <div class="absolute top-0 left-0 w-full h-full z-10 bg-gradient-to-tl from-[#F5CCA0]/20 via-transparent to-[#6B1D2D]/30 pointer-events-none"></div>
+
+  <!-- Toggle Button (always visible) -->
+  <button id="toggleNavBtn" class="fixed top-4 right-4 z-[110] bg-[#6B1D2D]/90 backdrop-blur-sm border-2 border-[#F5CCA0] rounded-full py-2 px-5 flex items-center gap-2 transition-all duration-300 hover:bg-[#F5CCA0] hover:text-[#6B1D2D] text-[#F5F0E6] font-bold shadow-lg text-sm sm:text-base sm:py-3 sm:px-6 hover:shadow-[0_0_15px_rgba(245,204,160,0.6)]">
+    <i class="fas fa-bars text-base sm:text-xl"></i>
+    <span class="text-xs sm:text-sm tracking-wider">MENU</span>
+  </button>
+
+  <!-- Hero Content – Enhanced with futuristic glow and prestigious typography -->
+  <div class="absolute bottom-[12%] left-[5%] z-20 text-[#F5F0E6] max-w-3xl animate__fadeInUp">
+    <div class="flex items-center gap-4 mb-8">
+      <div class="w-20 h-20 rounded-full border-2 border-[#F5CCA0] bg-[#6B1D2D]/40 backdrop-blur-sm flex items-center justify-center overflow-hidden shadow-[0_0_15px_rgba(245,204,160,0.3)]">
+        <img src="images/logo.png" alt="Oscar Mpetha Logo" class="w-12 h-12 object-contain">
+      </div>
+      <div class="serif">
+        <h2 class="text-2xl sm:text-3xl font-black tracking-wide text-[#F5CCA0] drop-shadow-lg"><span class="font-black">OSCAR MPETHA</span><br><span class="text-base sm:text-lg font-normal text-[#F5F0E6]">HIGH SCHOOL</span></h2>
+        <div class="text-xs tracking-wider opacity-80">EST. 1979 · NYANGA, CAPE FLATS</div>
+      </div>
+    </div>
+
+    <h1 class="text-5xl md:text-7xl font-black leading-tight drop-shadow-2xl">
+      Rise from the <span class="border-b-4 border-[#F5CCA0] inline-block pb-1">Flats</span>
+    </h1>
+    <div class="text-2xl md:text-3xl italic font-serif border-l-4 border-[#F5CCA0] pl-5 mt-3 text-[#F5CCA0] drop-shadow-md">“Where resilience wears a crown”</div>
+    <p class="mt-6 text-lg max-w-xl font-light leading-relaxed"><i class="fas fa-quote-left mr-2 opacity-70"></i> Beacon of hope, scholarship, and unbroken courage. Forged in Nyanga, rising for the world.</p>
+
+    <button id="exploreBtn" class="group mt-8 bg-gradient-to-r from-[#F5CCA0] to-[#F5E6C8] text-[#6B1D2D] font-extrabold px-8 py-3 rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(245,204,160,0.8)] flex items-center gap-2 border border-[#6B1D2D]/20">
+      Explore 9 Dimensions 
+      <i class="fas fa-cube group-hover:rotate-12 transition-transform duration-300"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Optional: Fade-in animation (if you don't have Animate.css, add this to your stylesheet) -->
+<style>
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate__fadeInUp {
+    animation: fadeInUp 1s ease-out forwards;
+  }
+  /* Prestigious serif font */
+  .serif {
+    font-family: 'Cormorant Garamond', serif;
+  }
+  /* Glow effect for text */
+  .drop-shadow-2xl {
+    text-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  }
+  .drop-shadow-md {
+    text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+</style>
+
+
+<!-- Full-screen sliding navigation – centered, premium futuristic -->
+<div id="fullscreenNav" class="fullscreen-nav">
+  <div class="close-nav-btn" id="closeNavBtn">
+    <i class="fas fa-times"></i>
+  </div>
+  <div class="flex items-center justify-center min-h-full">
+    <div class="max-w-4xl w-full mx-auto px-6 py-12 text-center">
+      <!-- Main navigation list – centered with soft spacing -->
+      <ul class="space-y-6 md:space-y-8">
+        <!-- HOME -->
+        <li><a href="index.html" class="nav-link-futuristic">HOME</a></li>
+        <!-- ABOUT -->
+        <li class="group relative">
+          <a href="about.html" class="nav-link-futuristic inline-flex items-center gap-2">ABOUT <i class="fas fa-chevron-down text-sm opacity-70 group-hover:opacity-100 transition"></i></a>
+          <div class="submenu-preview text-[#F5F0E6]/70 text-sm mt-1 space-x-3">
+            <a href="about.html#principal" class="hover:text-[#F5CCA0] transition">Principal</a>
+            <a href="about.html#sgb" class="hover:text-[#F5CCA0] transition">SGB</a>
+            <a href="about.html#oscar" class="hover:text-[#F5CCA0] transition">Oscar Mpetha</a>
+          </div>
+        </li>
+        <!-- ACADEMICS -->
+        <li class="group relative">
+          <a href="academics.html" class="nav-link-futuristic inline-flex items-center gap-2">ACADEMICS <i class="fas fa-chevron-down text-sm opacity-70 group-hover:opacity-100 transition"></i></a>
+          <div class="submenu-preview text-[#F5F0E6]/70 text-sm mt-1 space-x-3">
+            <a href="academics.html" class="hover:text-[#F5CCA0] transition">Pathways</a>
+            <a href="academics.html#career" class="hover:text-[#F5CCA0] transition">Career Compass</a>
+          </div>
+        </li>
+        
+         <!-- ADMISSIONS -->
+        <li><a href="admissions.html" class="nav-link-futuristic">ADMISSIONS</a></li>
+        <!-- ACHIEVEMENTS -->
+        <li><a href="achievements.html" class="nav-link-futuristic">ACHIEVEMENTS</a></li>
+        <!-- SPORTS & ARTS -->
+        <li><a href="sports.html" class="nav-link-futuristic">SPORTS & ARTS</a></li>
+        <!-- SAFETY & WELLNESS -->
+        <li><a href="safety-wellness.html" class="nav-link-futuristic">SAFETY & WELLNESS</a></li>
+        <!-- DONATE -->
+        <li><a href="support.html" class="nav-link-futuristic">DONATE</a></li>
+        <!-- COMMUNITY & ALUMNI -->
+        <li><a href="community-alumni.html" class="nav-link-futuristic">COMMUNITY & ALUMNI</a></li>
+        <!-- GALLERY -->
+        <li><a href="gallery.html" class="nav-link-futuristic">GALLERY</a></li>
+        <!-- FUTURE -->
+        <li><a href="future.html" class="nav-link-futuristic">FUTURE</a></li>
+        <!-- CONTACT -->
+        <li><a href="contact.html" class="nav-link-futuristic">CONTACT</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Premium futuristic navigation styles */
+  .fullscreen-nav {
+    background: linear-gradient(135deg, #4A1220 0%, #2A0A10 100%);
+    backdrop-filter: blur(20px);
+    font-family: 'Cormorant Garamond', serif;
+  }
+  .nav-link-futuristic {
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: #F5F0E6;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+    position: relative;
+  }
+  .nav-link-futuristic:hover {
+    color: #F5CCA0;
+    text-shadow: 0 0 8px rgba(245, 204, 160, 0.6);
+    transform: translateY(-2px);
+  }
+  .submenu-preview a {
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+  }
+  /* Close button style */
+  .close-nav-btn {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-size: 2rem;
+    color: #F5CCA0;
+    background: rgba(107, 29, 45, 0.4);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+  }
+  .close-nav-btn:hover {
+    background: #6B1D2D;
+    color: #F5F0E6;
+    transform: rotate(90deg);
+    box-shadow: 0 0 12px rgba(245, 204, 160, 0.4);
+  }
+  @media (min-width: 768px) {
+    .nav-link-futuristic {
+      font-size: 2.8rem;
+    }
+  }
+</style>
+
+<style>
+  /* Premium futuristic navigation styles */
+  .fullscreen-nav {
+    background: linear-gradient(135deg, #4A1220 0%, #2A0A10 100%);
+    backdrop-filter: blur(20px);
+    font-family: 'Cormorant Garamond', serif;
+  }
+  .nav-link-futuristic {
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: #F5F0E6;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+    position: relative;
+  }
+  .nav-link-futuristic:hover {
+    color: #F5CCA0;
+    text-shadow: 0 0 8px rgba(245, 204, 160, 0.6);
+    transform: translateY(-2px);
+  }
+  .submenu-preview a {
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+  }
+  /* Close button style */
+  .close-nav-btn {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-size: 2rem;
+    color: #F5CCA0;
+    background: rgba(107, 29, 45, 0.4);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+  }
+  .close-nav-btn:hover {
+    background: #6B1D2D;
+    color: #F5F0E6;
+    transform: rotate(90deg);
+    box-shadow: 0 0 12px rgba(245, 204, 160, 0.4);
+  }
+  @media (min-width: 768px) {
+    .nav-link-futuristic {
+      font-size: 2.8rem;
+    }
+  }
+</style>
+
+<style>
+  /* Premium futuristic navigation styles */
+  .fullscreen-nav {
+    background: linear-gradient(135deg, #4A1220 0%, #2A0A10 100%);
+    backdrop-filter: blur(20px);
+    font-family: 'Cormorant Garamond', serif;
+  }
+  .nav-link-futuristic {
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: #F5F0E6;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+    position: relative;
+  }
+  .nav-link-futuristic:hover {
+    color: #F5CCA0;
+    text-shadow: 0 0 8px rgba(245, 204, 160, 0.6);
+    transform: translateY(-2px);
+  }
+  .submenu-preview a {
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+  }
+  /* Close button style */
+  .close-nav-btn {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-size: 2rem;
+    color: #F5CCA0;
+    background: rgba(107, 29, 45, 0.4);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+  }
+  .close-nav-btn:hover {
+    background: #6B1D2D;
+    color: #F5F0E6;
+    transform: rotate(90deg);
+    box-shadow: 0 0 12px rgba(245, 204, 160, 0.4);
+  }
+  @media (min-width: 768px) {
+    .nav-link-futuristic {
+      font-size: 2.8rem;
+    }
+  }
+</style>
+
+  <!-- 9 CUBE CARDS SECTION – FULL TAILWIND LAYOUT + CUSTOM 3D -->
+<div class="flex flex-wrap justify-center gap-16 mt-12">
+  
+  <!-- 1. ABOUT -->
+  <div class="cube-card"><div class="cube">
+    <div class="face front"><video autoplay muted loop playsinline><source src="images/mpetha.mp4" type="video/mp4"></video><div class="face-content"><i class="fas fa-chalkboard-user"></i><h3>Our Story</h3><p>Quality Education</p></div></div>
+    <div class="face back"><div class="face-content light"><i class="fas fa-chalkboard-user"></i><h3>Principal's Word</h3><p>Vision & mission</p></div></div>
+    <div class="face right"><div class="face-content"><i class="fas fa-users"></i><h3>SGB</h3><p>Governance structure</p></div></div>
+    <div class="face left"><div class="face-content light"><i class="fas fa-landmark"></i><h3>History</h3><p>1979 – present</p></div></div>
+    <div class="face top"><div class="face-content"><i class="fas fa-flag-south-africa"></i><h3>Values</h3><p>Resilience, Excellence</p></div></div>
+    <div class="face bottom"><div class="face-content light"><i class="fas fa-map-marker-alt"></i><h3>Nyanga</h3><p>Cape Flats pride</p></div></div>
+  </div></div>
+
+  <!-- 2. ACADEMICS -->
+  <div class="cube-card"><div class="cube">
+    <div class="face front"><img src="images/achiever.jpg" alt="library"><div class="face-content"><i class="fas fa-graduation-cap"></i><h3>Academics</h3><p>Top Maths & Science</p></div></div>
+    <div class="face back"><div class="face-content light"><i class="fas fa-flask"></i><h3>Sciences</h3><p>Physics, Biology, Chem</p></div></div>
+    <div class="face right"><div class="face-content"><i class="fas fa-calculator"></i><h3>Mathematics</h3><p>Pure & Lit</p></div></div>
+    <div class="face left"><div class="face-content light"><i class="fas fa-book"></i><h3>Languages</h3><p>English, isiXhosa</p></div></div>
+    <div class="face top"><div class="face-content"><i class="fas fa-laptop-code"></i><h3>IT & CAT</h3><p>Computer skills</p></div></div>
+    <div class="face bottom"><div class="face-content light"><i class="fas fa-chart-line"></i><h3>Pass Rate</h3><p>92% (2024)</p></div></div>
+  </div></div>
+
+  <!-- 3. ADMISSIONS -->
+  <div class="cube-card"><div class="cube">
+    <div class="face front"><img src="images/oscar.jfif" alt="library"><div class="face-content"><i class="fas fa-envelope-open-text"></i><h3>Admissions</h3><p>Join our family</p></div></div>
+    <div class="face back"><div class="face-content light"><i class="fas fa-file-alt"></i><h3>Apply Online</h3><p>Step‑by‑step guide</p></div></div>
+    <div class="face right"><div class="face-content"><i class="fas fa-coins"></i><h3>Fee Structure</h3><p>Affordable fees</p></div></div>
+    <div class="face left"><div class="face-content light"><i class="fas fa-hand-holding-usd"></i><h3>Bursaries</h3><p>Financial aid</p></div></div>
+    <div class="face top"><div class="face-content"><i class="fas fa-calendar-alt"></i><h3>Open Day</h3><p>Visit us</p></div></div>
+    <div class="face bottom"><div class="face-content light"><i class="fas fa-check-circle"></i><h3>Requirements</h3><p>Documents needed</p></div></div>
+  </div></div>
+
+  <!-- 4. ACHIEVEMENTS -->
+  <div class="cube-card"><div class="cube">
+    <div class="face front"><img src="images/o12.jpg" alt="library"><div class="face-content"><i class="fas fa-trophy"></i><h3>Achievements</h3><p>Our proud moments</p></div></div>
+    <div class="face back"><div class="face-content light"><i class="fas fa-award"></i><h3>Top Matric</h3><p>District leaders</p></div></div>
+    <div class="face right"><div class="face-content"><i class="fas fa-medal"></i><h3>Sports</h3><p>Provincial medals</p></div></div>
+    <div class="face left"><div class="face-content light"><i class="fas fa-music"></i><h3>Eisteddfod</h3><p>Gold awards</p></div></div>
+    <div class="face top"><div class="face-content"><i class="fas fa-microchip"></i><h3>Robotics</h3><p>National finals</p></div></div>
+    <div class="face bottom"><div class="face-content light"><i class="fas fa-chalkboard"></i><h3>Debate</h3><p>Provincial runners‑up</p></div></div>
+  </div></div>
+
+  <!-- 5. SPORTS & ARTS -->
+  <div class="cube-card"><div class="cube">
+    <div class="face front"><video autoplay muted loop playsinline><source src="images/balls.mp4" type="video/mp4"></video><div class="face-content"><i class="fas fa-futbol"></i><h3>Sports</h3><p>Football, netball, rugby</p></div></div>
+    <div class="face back"><div class="face-content light"><i class="fas fa-basketball"></i><h3>Basketball</h3><p>U14, U16 teams</p></div></div>
+    <div class="face right"><div class="face-content"><i class="fas fa-drumstick-bite"></i><h3>Marimba</h3><p>Rhythms of Nyanga</p></div></div>
+    <div class="face left"><div class="face-content light"><i class="fas fa-palette"></i><h3>Visual Arts</h3><p>Murals & exhibitions</p></div></div>
+    <div class="face top"><div class="face-content"><i class="fas fa-microphone-alt"></i><h3>Choir</h3><p>Gospel & traditional</p></div></div>
+    <div class="face bottom"><div class="face-content light"><i class="fas fa-running"></i><h3>Athletics</h3><p>Track & field</p></div></div>
+  </div></div>
+
+  <!-- 6. GALLERY -->
+  <div class="cube-card"><div class="cube">
+    <div class="face front"><img src="images/o1.jpg" alt="library"><div class="face-content"><i class="fas fa-images"></i><h3>Gallery</h3><p>Moments captured</p></div></div>
+    <div class="face back"><div class="face-content light"><i class="fas fa-camera"></i><h3>Photo Albums</h3><p>Events & classes</p></div></div>
+    <div class="face right"><div class="face-content"><i class="fas fa-video"></i><h3>Videos</h3><p>Performances, matches</p></div></div>
+    <div class="face left"><div class="face-content light"><i class="fas fa-vr-cardboard"></i><h3>Virtual Tour</h3><p>Explore campus</p></div></div>
+    <div class="face top"><div class="face-content"><i class="fas fa-calendar-week"></i><h3>Annual Day</h3><p>Highlights</p></div></div>
+    <div class="face bottom"><div class="face-content light"><i class="fas fa-users"></i><h3>School Life</h3><p>Daily moments</p></div></div>
+  </div></div>
+
+  <!-- 7. COMMUNITY & ALUMNI -->
+  <div class="cube-card"><div class="cube">
+    <div class="face front"><img src="images/o8.jpg" alt="library"><div class="face-content"><i class="fas fa-handshake"></i><h3>Alumni</h3><p>Stay connected</p></div></div>
+    <div class="face back"><div class="face-content light"><i class="fas fa-users"></i><h3>Alumni Assoc.</h3><p>Reunions & events</p></div></div>
+    <div class="face right"><div class="face-content"><i class="fas fa-seedling"></i><h3>Outreach</h3><p>Feeding scheme</p></div></div>
+    <div class="face left"><div class="face-content light"><i class="fas fa-chalkboard-user"></i><h3>Mentorship</h3><p>Alumni mentor learners</p></div></div>
+    <div class="face top"><div class="face-content"><i class="fas fa-dove"></i><h3>Peace projects</h3><p>Community safety</p></div></div>
+    <div class="face bottom"><div class="face-content light"><i class="fas fa-tree"></i><h3>Nyanga clean‑up</h3><p>Monthly campaigns</p></div></div>
+  </div></div>
+
+  <!-- 8. THE FUTURE -->
+  <div class="cube-card"><div class="cube">
+    <div class="face front"><img src="images/kido.jpg" alt="library"><div class="face-content"><i class="fas fa-rocket"></i><h3>The Future</h3><p>Tomorrow's leaders</p></div></div>
+    <div class="face back"><div class="face-content light"><i class="fas fa-chalkboard"></i><h3>Career guidance</h3><p>Workshops & expos</p></div></div>
+    <div class="face right"><div class="face-content"><i class="fas fa-university"></i><h3>University prep</h3><p>Application support</p></div></div>
+    <div class="face left"><div class="face-content light"><i class="fas fa-laptop"></i><h3>Digital skills</h3><p>Coding, robotics</p></div></div>
+    <div class="face top"><div class="face-content"><i class="fas fa-hand-holding-heart"></i><h3>Bursaries</h3><p>Financial future</p></div></div>
+    <div class="face bottom"><div class="face-content light"><i class="fas fa-globe"></i><h3>Global citizens</h3><p>Exchange programmes</p></div></div>
+  </div></div>
+
+  <!-- 9. SAFETY & WELLNESS -->
+  <div class="cube-card"><div class="cube">
+    <div class="face front"><img src="images/o6.jpg" alt="library"><div class="face-content"><i class="fas fa-shield-alt"></i><h3>Safety</h3><p>Safe learning</p></div></div>
+    <div class="face back"><div class="face-content light"><i class="fas fa-heartbeat"></i><h3>Wellness</h3><p>Counselling services</p></div></div>
+    <div class="face right"><div class="face-content"><i class="fas fa-ban"></i><h3>Anti‑bullying</h3><p>Policy & awareness</p></div></div>
+    <div class="face left"><div class="face-content light"><i class="fas fa-hand-holding-medical"></i><h3>Health days</h3><p>Screenings & talks</p></div></div>
+    <div class="face top"><div class="face-content"><i class="fas fa-child"></i><h3>Child protection</h3><p>Safe reporting</p></div></div>
+    <div class="face bottom"><div class="face-content light"><i class="fas fa-smile"></i><h3>Peer support</h3><p>Buddy system</p></div></div>
+  </div></div>
+
+  <!-- 10. CONTACT -->
+  <div class="cube-card"><div class="cube">
+    <div class="face front"><img src="images/o5.jpg" alt="library"><div class="face-content"><i class="fas fa-phone-alt"></i><h3>Contact</h3><p>Get in touch</p></div></div>
+    <div class="face back"><div class="face-content light"><i class="fas fa-map-marker-alt"></i><h3>Location</h3><p>Nyanga, Cape Flats</p></div></div>
+    <div class="face right"><div class="face-content"><i class="fas fa-envelope"></i><h3>Email</h3><p>info@oscarmpetha.org</p></div></div>
+    <div class="face left"><div class="face-content light"><i class="fas fa-phone"></i><h3>Tel</h3><p>+27 21 386 1234</p></div></div>
+    <div class="face top"><div class="face-content"><i class="fas fa-clock"></i><h3>Office hours</h3><p>Mon–Fri 8am‑3pm</p></div></div>
+    <div class="face bottom"><div class="face-content light"><i class="fas fa-comment-dots"></i><h3>Inquiry form</h3><p>Send message</p></div></div>
+  </div></div>
+
+  <!-- 11. DONATE -->
+  <div class="cube-card"><div class="cube">
+    <div class="face front"><img src="images/o13.jpeg" alt="library"><div class="face-content"><i class="fas fa-donate"></i><h3>Donate</h3><p>Support our learners</p></div></div>
+    <div class="face back"><div class="face-content light"><i class="fas fa-user-graduate"></i><h3>Sponsor a child</h3><p>Annual fees</p></div></div>
+    <div class="face right"><div class="face-content"><i class="fas fa-tools"></i><h3>Infrastructure</h3><p>Fix & build</p></div></div>
+    <div class="face left"><div class="face-content light"><i class="fas fa-laptop"></i><h3>Tech equipment</h3><p>Tablets & lab gear</p></div></div>
+    <div class="face top"><div class="face-content"><i class="fas fa-futbol"></i><h3>Sports kit</h3><p>Uniforms & gear</p></div></div>
+    <div class="face bottom"><div class="face-content light"><i class="fas fa-leaf"></i><h3>Legacy fund</h3><p>Bequests & trusts</p></div></div>
+  </div></div>
+
+  <!-- 12. AI CLUB -->
+  <div class="cube-card"><div class="cube">
+    <div class="face front"><img src="images/logo.jfif" alt="library"><div class="face-content"><i class="fas fa-robot"></i><h3>AI Club</h3><p>Future tech <br>Coming Soon... </p></div></div>
+    <div class="face back"><div class="face-content light"><i class="fas fa-code"></i><h3>Python basics</h3><p>Intro to coding</p></div></div>
+    <div class="face right"><div class="face-content"><i class="fas fa-brain"></i><h3>Machine learning</h3><p>Crash course</p></div></div>
+    <div class="face left"><div class="face-content light"><i class="fas fa-chat"></i><h3>Chatbots</h3><p>Build your own</p></div></div>
+    <div class="face top"><div class="face-content"><i class="fas fa-microchip"></i><h3>Robotics</h3><p>Arduino & sensors</p></div></div>
+    <div class="face bottom"><div class="face-content light"><i class="fas fa-trophy"></i><h3>Hackathons</h3><p>Compete & win</p></div></div>
+  </div></div>
+
+</div>
+
+  <!-- 🚀 OVERSIZED FUTURISTIC FOOTER – Maroon & Neon Glow -->
+<footer class="relative bg-[#6B1D2D] text-[#F5F0E6] pt-16 pb-8 border-t-4 border-[#F5CCA0]/50 shadow-2xl overflow-hidden mt-12">
+  <!-- Futuristic animated glow line (top) -->
+  <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#F5CCA0] to-transparent animate-pulse"></div>
+  
+  <div class="max-w-7xl mx-auto px-5">
+    <!-- Main footer grid – oversized spacing -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
+      
+      <!-- Column 1: School Identity & Vision -->
+      <div>
+       <div class="flex items-center gap-4 mb-8">
+      <div class="w-20 h-20 rounded-full border-2 border-[#F5CCA0] bg-[#6B1D2D]/40 backdrop-blur-sm flex items-center justify-center overflow-hidden shadow-[0_0_15px_rgba(245,204,160,0.3)]">
+        <img src="images/logo.png" alt="Oscar Mpetha Logo" class="w-12 h-12 object-contain">
+      </div>
+      <div class="serif">
+        <h2 class="text-2xl sm:text-3xl font-black tracking-wide text-[#F5CCA0] drop-shadow-lg"><span class="font-black">OSCAR MPETHA</span><br><span class="text-base sm:text-lg font-normal text-[#F5F0E6]">HIGH SCHOOL</span></h2>
+        <div class="text-xs tracking-wider opacity-80">EST. 1979 · NYANGA, CAPE FLATS</div>
+      </div>
+    </div>
+        <p class="text-sm opacity-80 leading-relaxed">Forged in Nyanga, rising for the world. A no‑fee school of excellence, resilience, and innovation since 1979.</p>
+        <div class="mt-4 flex gap-4">
+          <a href="#" class="text-[#F5CCA0] hover:text-white transition transform hover:scale-110"><i class="fab fa-facebook-f text-xl"></i></a>
+          <a href="#" class="text-[#F5CCA0] hover:text-white transition transform hover:scale-110"><i class="fab fa-twitter text-xl"></i></a>
+          <a href="#" class="text-[#F5CCA0] hover:text-white transition transform hover:scale-110"><i class="fab fa-instagram text-xl"></i></a>
+          <a href="#" class="text-[#F5CCA0] hover:text-white transition transform hover:scale-110"><i class="fab fa-youtube text-xl"></i></a>
+          <a href="#" class="text-[#F5CCA0] hover:text-white transition transform hover:scale-110"><i class="fab fa-linkedin-in text-xl"></i></a>
+        </div>
+      </div>
+
+      <!-- Column 2: Quick Links (main pages) -->
+      <div>
+        <h3 class="text-lg font-bold uppercase tracking-wider border-l-4 border-[#F5CCA0] pl-3 mb-5">Explore</h3>
+        <ul class="space-y-3 text-sm">
+          <li><a href="index.html" class="hover:text-[#F5CCA0] transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> Home</a></li>
+          <li><a href="about.html" class="hover:text-[#F5CCA0] transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> About Us</a></li>
+          <li><a href="academics.html" class="hover:text-[#F5CCA0] transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> Academics & Career Compass</a></li>
+          <li><a href="sports-arts.html" class="hover:text-[#F5CCA0] transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> Sports & Arts</a></li>
+          <li><a href="gallery.html" class="hover:text-[#F5CCA0] transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> Gallery</a></li>
+          <li><a href="admissions.html" class="hover:text-[#F5CCA0] transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> The Future</a></li>
+          <li><a href="donate.html" class="hover:text-[#F5CCA0] transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> Donate</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Community & Support -->
+      <div>
+        <h3 class="text-lg font-bold uppercase tracking-wider border-l-4 border-[#F5CCA0] pl-3 mb-5">Community</h3>
+        <ul class="space-y-3 text-sm">
+          <li><a href="community-alumni.html" class="hover:text-[#F5CCA0] transition flex items-center gap-2"><i class="fas fa-users"></i> Alumni & Community</a></li>
+          <li><a href="safety-wellness.html" class="hover:text-[#F5CCA0] transition flex items-center gap-2"><i class="fas fa-shield-alt"></i> Safety & Wellness</a></li>
+          <li><a href="achievements.html" class="hover:text-[#F5CCA0] transition flex items-center gap-2"><i class="fas fa-trophy"></i> Achievements</a></li>
+          <li><a href="future.html" class="hover:text-[#F5CCA0] transition flex items-center gap-2"><i class="fas fa-envelope-open-text"></i> Admissions</a></li>
+          <li><a href="contact.html" class="hover:text-[#F5CCA0] transition flex items-center gap-2"><i class="fas fa-phone-alt"></i> Contact</a></li>
+          <li><a href="support.html" class="hover:text-[#F5CCA0] transition flex items-center gap-2"><i class="fas fa-hand-holding-heart"></i> Volunteer</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 4: Newsletter & Contact -->
+      <div>
+        <h3 class="text-lg font-bold uppercase tracking-wider border-l-4 border-[#F5CCA0] pl-3 mb-5">Connect</h3>
+        <div class="space-y-3 text-sm">
+          <p><i class="fas fa-map-marker-alt w-5 text-[#F5CCA0]"></i> Cnr Ntlazane & Ngangezwe St, Nyanga, Cape Flats, 7755</p>
+          <p><i class="fas fa-phone-alt w-5 text-[#F5CCA0]"></i> +27 21 386 1234</p>
+          <p><i class="fas fa-envelope w-5 text-[#F5CCA0]"></i> info@oscarmpetha.org</p>
+        </div>
+        <div class="mt-6">
+          <label class="block text-sm font-semibold mb-2">Subscribe to Future Insights</label>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input type="email" placeholder="Your email" class="bg-[#F5F0E6]/10 border border-[#F5CCA0]/30 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-[#F5CCA0] w-full">
+            <button class="bg-[#F5CCA0] text-[#6B1D2D] font-bold px-5 py-2 rounded-full hover:bg-white transition shadow-md">Subscribe</button>
+          </div>
+          <p class="text-xs opacity-60 mt-2">No spam, just once‑a‑month updates on our future projects.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom bar – oversized legal & back to top -->
+    <div class="mt-16 pt-8 border-t border-[#F5CCA0]/30 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+      <div class="text-center md:text-left">
+        <p>© 2026 Oscar Mpetha High School. All rights reserved. | PBO Section 18A | NPO 123-456</p>
+        <p class="text-xs opacity-70 mt-1"><p class="text-xs text-gray-400 mt-1">Designed with <i class="fas fa-heart text-[#B84A60]"></i> for excellence in education.</p> by AbaNtu Intelligence</p>
+      </div>
+      <div class="flex gap-6">
+        <a href="#" class="hover:text-[#F5CCA0] transition">Privacy Policy</a>
+        <a href="#" class="hover:text-[#F5CCA0] transition">Terms of Use</a>
+        <a href="#" class="hover:text-[#F5CCA0] transition">Accessibility</a>
+      </div>
+      <button id="backToTop" class="bg-[#F5CCA0] text-[#6B1D2D] w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition shadow-lg"><i class="fas fa-arrow-up"></i></button>
+    </div>
+  </div>
+
+  <!-- Extra futuristic floating particles (decorative) -->
+  <div class="absolute bottom-0 left-0 w-full h-20 pointer-events-none overflow-hidden">
+    <div class="absolute bottom-0 left-1/4 w-2 h-2 bg-[#F5CCA0] rounded-full animate-ping"></div>
+    <div class="absolute bottom-2 left-1/2 w-1 h-1 bg-[#F5CCA0] rounded-full animate-pulse"></div>
+    <div class="absolute bottom-4 left-3/4 w-1.5 h-1.5 bg-[#F5CCA0] rounded-full animate-bounce"></div>
+  </div>
+</footer>
+
+<script>
+  // Back to top button functionality
+  const backToTop = document.getElementById('backToTop');
+  if (backToTop) {
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+  // Simple newsletter subscription demo (optional)
+  const subBtn = document.querySelector('footer button:not(#backToTop)');
+  if (subBtn) {
+    subBtn.addEventListener('click', (e) => {
+      const emailInput = subBtn.previousElementSibling;
+      if (emailInput && emailInput.value) {
+        alert(`Thank you for subscribing! We'll send news to ${emailInput.value}.`);
+        emailInput.value = '';
+      } else {
+        alert('Please enter a valid email address.');
+      }
+    });
+  }
+</script>
+
+  <script>
+    // Full-screen navigation toggle
+    const toggleBtn = document.getElementById('toggleNavBtn');
+    const fullscreenNav = document.getElementById('fullscreenNav');
+    const closeNavBtn = document.getElementById('closeNavBtn');
+    const exploreBtn = document.getElementById('exploreBtn');
+
+    function openNav() {
+      fullscreenNav.classList.add('open');
+      toggleBtn.innerHTML = '<i class="fas fa-times text-base sm:text-xl"></i><span class="text-xs sm:text-sm tracking-wider">CLOSE</span>';
+    }
+    function closeNav() {
+      fullscreenNav.classList.remove('open');
+      toggleBtn.innerHTML = '<i class="fas fa-bars text-base sm:text-xl"></i><span class="text-xs sm:text-sm tracking-wider">MENU</span>';
+    }
+
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (fullscreenNav.classList.contains('open')) closeNav();
+      else openNav();
+    });
+    closeNavBtn.addEventListener('click', closeNav);
+
+    // Close nav when any link inside is clicked (optional)
+    document.querySelectorAll('#fullscreenNav a').forEach(link => {
+      link.addEventListener('click', closeNav);
+    });
+
+    // Scroll to cubes section on "Explore" button click
+    if (exploreBtn) {
+      exploreBtn.addEventListener('click', () => {
+        const cubesSection = document.querySelector('.py-24');
+        if (cubesSection) cubesSection.scrollIntoView({ behavior: 'smooth' });
+        closeNav(); // also close nav if open
+      });
+    }
+    // Make cube cards clickable – map each to its destination page
+const cubeCards = document.querySelectorAll('.cube-card');
+const destinations = [
+  'about.html',           // 1. Our Story / About
+  'academics.html',       // 2. Academics
+  'admissions.html',      // 3. Admissions
+  'achievements.html',    // 4. Achievements
+  'sports-arts.html',     // 5. Sports & Arts
+  'gallery.html',         // 6. Gallery
+  'community-alumni.html',// 7. Community & Alumni
+  'future.html',          // 8. The Future
+  'safety-wellness.html', // 9. Safety & Wellness
+  'contact.html',         // 10. Contact
+  'donate.html',          // 11. Donate
+  'ai-club.html'          // 12. AI Club (create page or keep as placeholder)
+];
+
+cubeCards.forEach((card, index) => {
+  if (destinations[index]) {
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', (e) => {
+      // Stop event if clicked on any interactive element inside? Not needed.
+      window.location.href = destinations[index];
+    });
+  }
+});
+  </script>
+</body>
+</html>

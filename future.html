@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Prestige High School — Our Future (Enhanced)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Dark shiny maroon + beige laces */
+    :root {
+      --maroon-deep: #2D0A13;
+      --maroon-dark: #4A1525;
+      --maroon-shiny: #6B1E32;
+      --maroon-glow: #9E2A3E;
+      --beige-light: #F5EFE2;
+      --beige-muted: #E8DEC9;
+      --beige-strong: #D6C8A8;
+    }
+    body {
+      background: linear-gradient(135deg, var(--maroon-deep) 0%, var(--maroon-dark) 100%);
+      font-family: 'Inter', sans-serif;
+      color: var(--beige-light);
+      margin: 0;
+      padding: 0;
+    }
+    h1, h2, h3, h4, .font-display {
+      font-family: 'Playfair Display', serif;
+    }
+    .futuristic-card {
+      background: rgba(107, 30, 50, 0.4);
+      backdrop-filter: blur(12px);
+      border-radius: 2rem;
+      border: 1px solid rgba(214, 200, 168, 0.25);
+      box-shadow: 0 25px 40px -12px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.1);
+      transition: all 0.3s ease;
+    }
+    .futuristic-card:hover {
+      border-color: var(--beige-strong);
+      transform: translateY(-5px);
+    }
+    .section-container {
+      max-width: 1280px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+      padding-top: 5rem;
+      padding-bottom: 5rem;
+    }
+    .btn-future {
+      background: linear-gradient(95deg, var(--maroon-shiny), var(--maroon-glow));
+      border: 1px solid var(--beige-strong);
+      transition: all 0.25s ease;
+    }
+    .btn-future:hover {
+      background: linear-gradient(95deg, var(--maroon-glow), var(--maroon-shiny));
+      transform: scale(1.02);
+    }
+    .modal-overlay {
+      background-color: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+    }
+    /* typing animation */
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .typing-cursor::after {
+      content: '█';
+      animation: blink 1s step-end infinite;
+      margin-left: 2px;
+    }
+    /* Layout header/sidebar styles (Prestige) */
+    .prestige-header {
+      background: white;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      width: 100%;
+    }
+    .header-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .hamburger {
+      background-color: var(--maroon-light);
+      border: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .hamburger:hover {
+      background-color: var(--maroon);
+      transform: scale(1.02);
+    }
+    .prestige-sidebar {
+      position: fixed;
+      top: 0;
+      left: -300px;
+      width: 300px;
+      height: 100%;
+      background: white;
+      box-shadow: 2px 0 25px rgba(0,0,0,0.15);
+      transition: left 0.3s ease;
+      z-index: 1000;
+      padding: 1.5rem;
+      border-right: 1px solid #E2D4B6;
+      overflow-y: auto;
+    }
+    .prestige-sidebar.open {
+      left: 0;
+    }
+    .sidebar-header {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1.5rem;
+    }
+    .close-sidebar-btn {
+      background: #f0f0f0;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      transition: all 0.2s;
+    }
+    .close-sidebar-btn:hover {
+      background: #B84A60;
+      color: white;
+    }
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 1rem;
+      transition: all 0.2s;
+      color: #2d3e50;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .nav-link:hover, .nav-link.active {
+      background: #B84A60;
+      color: white;
+    }
+    .prestige-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      display: none;
+    }
+    .prestige-overlay.active {
+      display: block;
+    }
+    .page-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0;
+      min-height: calc(100vh - 80px);
+      background: transparent; /* keep futuristic gradient visible */
+    }
+    .prestige-footer {
+      background: #1a1a2e;
+      color: #ccc;
+      padding: 2rem 1rem;
+      text-align: center;
+      margin-top: 3rem;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    // ----- Layout Component (shared header, sidebar, footer) -----
+    const Layout = ({ children }) => {
+      const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+
+      React.useEffect(() => {
+        const saved = localStorage.getItem('prestige_sidebar_open');
+        if (saved === 'true') setIsSidebarOpen(true);
+      }, []);
+
+      const openSidebar = () => {
+        setIsSidebarOpen(true);
+        localStorage.setItem('prestige_sidebar_open', 'true');
+      };
+      const closeSidebar = () => {
+        setIsSidebarOpen(false);
+        localStorage.setItem('prestige_sidebar_open', 'false');
+      };
+      const toggleSidebar = () => {
+        if (isSidebarOpen) closeSidebar();
+        else openSidebar();
+      };
+
+      const navLinks = [
+  { name: 'Home', path: 'index.html', icon: <i className="fas fa-home"></i> },
+  { name: 'About', path: 'about.html', icon: <i className="fas fa-school"></i> },
+  { name: 'Academics', path: 'academics.html', icon: <i className="fas fa-graduation-cap"></i> },
+  { name: 'Admissions', path: 'admissions.html', icon: <i className="fas fa-file-alt"></i> },
+  { name: 'Achievements', path: 'achievements.html', icon: <i className="fas fa-trophy"></i> },
+  { name: 'Sports & Arts', path: 'sports.html', icon: <i className="fas fa-futbol"></i> },
+  { name: 'Gallery', path: 'gallery.html', icon: <i className="fas fa-images"></i> },
+  { name: 'Community & Alumni', path: 'community.html', icon: <i className="fas fa-users"></i> },
+  { name: 'Donate', path: 'donate.html', icon: <i className="fas fa-hand-holding-heart"></i> },
+  { name: 'Contact', path: 'contact.html', icon: <i className="fas fa-envelope"></i> },
+  { name: 'Our Future', path: 'future.html', icon: <i className="fas fa-rocket"></i> }
+];
+
+      const currentPage = window.location.pathname.split('/').pop();
+
+      return (
+        <>
+          <div className="prestige-header">
+  <div className="header-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <button className="hamburger" onClick={toggleSidebar}>☰</button>
+    
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <img src="images/logo.png" alt="Prestige High School" style={{ height: '40px', width: 'auto' }} />
+      <span className="font-display text-2xl font-bold text-gray-800" style={{ whiteSpace: 'nowrap' }}>Oscar Mpetha High School</span>
+    </div>
+    
+    <div style={{ width: 48 }}></div>
+  </div>
+</div>
+
+          <div className={`prestige-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+            <div className="sidebar-header">
+              <button className="close-sidebar-btn" onClick={closeSidebar}>✕</button>
+            </div>
+            <div className="nav-links">
+              {navLinks.map(link => (
+                <a
+                  key={link.path}
+                  href={link.path}
+                  className={`nav-link ${currentPage === link.path ? 'active' : ''}`}
+                >
+                  <span>{link.icon}</span> {link.name}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div className={`prestige-overlay ${isSidebarOpen ? 'active' : ''}`} onClick={closeSidebar}></div>
+
+          <main className="page-content">{children}</main>
+
+              {/* ===== OVERSIZED FUTURISTIC FOOTER ===== */}
+      <footer className="relative bg-[#6B1D2D] text-[#F5F0E6] text-[#F5F0E6] pt-20 pb-10 border-t-4 border-[#B84A60]/50 shadow-2xl overflow-hidden mt-16">
+        {/* Animated glow line */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#B84A60] to-transparent animate-pulse"></div>
+
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          {/* Main footer grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
+            
+            {/* Column 1: School Identity & Logo */}
+            <div>
+             <div className="flex items-center gap-4 mb-8">
+  <div className="w-20 h-20 rounded-full border-2 border-[#F5CCA0] bg-[#6B1D2D]/40 backdrop-blur-sm flex items-center justify-center overflow-hidden shadow-[0_0_15px_rgba(245,204,160,0.3)]">
+    <img src="images/logo.png" alt="Oscar Mpetha Logo" className="w-12 h-12 object-contain" />
+  </div>
+  <div className="serif">
+    <h2 className="text-2xl sm:text-3xl font-black tracking-wide text-[#F5CCA0] drop-shadow-lg">
+      <span className="font-black">OSCAR MPETHA</span>
+      <br />
+      <span className="text-base sm:text-lg font-normal text-[#F5F0E6]">HIGH SCHOOL</span>
+    </h2>
+    <div className="text-xs tracking-wider opacity-80">EST. 1979 · NYANGA, CAPE FLATS</div>
+  </div>
+</div>
+              <p className="text-gray-300 text-sm leading-relaxed">A beacon of academic excellence, holistic development, and community spirit. Shaping future leaders since 1965.</p>
+              <div className="flex gap-4 mt-6">
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-facebook-f text-xl"></i></a>
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-twitter text-xl"></i></a>
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-instagram text-xl"></i></a>
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-youtube text-xl"></i></a>
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-linkedin-in text-xl"></i></a>
+              </div>
+            </div>
+
+            {/* Column 2: Quick Links */}
+            <div>
+              <h3 className="text-lg font-bold uppercase tracking-wider border-l-4 border-[#B84A60] pl-3 mb-5">Explore</h3>
+              <ul className="space-y-3 text-sm">
+                <li><a href="about.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> About Us</a></li>
+                <li><a href="academics.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Academics & Career Compass</a></li>
+                <li><a href="admissions.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Admissions</a></li>
+                <li><a href="achievements.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Achievements</a></li>
+                <li><a href="sports-arts.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Sports & Arts</a></li>
+                <li><a href="gallery.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Gallery</a></li>
+                <li><a href="future.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Our Future</a></li>
+              </ul>
+            </div>
+
+            {/* Column 3: Community & Support */}
+            <div>
+              <h3 className="text-lg font-bold uppercase tracking-wider border-l-4 border-[#B84A60] pl-3 mb-5">Community</h3>
+              <ul className="space-y-3 text-sm">
+                <li><a href="community-alumni.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-users"></i> Alumni & Community</a></li>
+                <li><a href="donate.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-hand-holding-heart"></i> Donate & Support</a></li>
+                <li><a href="contact.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-phone-alt"></i> Contact Us</a></li>
+                <li><a href="#" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-calendar-alt"></i> Events Calendar</a></li>
+                <li><a href="#" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-graduation-cap"></i> Alumni Registration</a></li>
+                <li><a href="#" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chalkboard-user"></i> Parent Portal</a></li>
+              </ul>
+            </div>
+
+            {/* Column 4: Newsletter & Contact */}
+            <div>
+              <h3 className="text-lg font-bold uppercase tracking-wider border-l-4 border-[#B84A60] pl-3 mb-5">Connect</h3>
+              <div className="space-y-3 text-sm">
+                <p><i className="fas fa-map-marker-alt w-5 text-[#B84A60]"></i> 123 Academy Avenue, Prestige Heights, Johannesburg, 2196</p>
+                <p><i className="fas fa-phone-alt w-5 text-[#B84A60]"></i> +27 12 345 6789</p>
+                <p><i className="fas fa-envelope w-5 text-[#B84A60]"></i> info@prestigehigh.co.za</p>
+                <p><i className="fas fa-clock w-5 text-[#B84A60]"></i> Mon–Fri: 07:30 – 16:30</p>
+              </div>
+              <div className="mt-6">
+                <label className="block text-sm font-semibold mb-2">Subscribe to Our Newsletter</label>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input type="email" placeholder="Your email address" className="bg-white/10 border border-[#B84A60]/40 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-[#B84A60] w-full text-white placeholder-gray-400" />
+                  <button id="newsletterSubscribe" className="bg-[#B84A60] text-white font-bold px-5 py-2 rounded-full hover:bg-[#9E2A3E] transition shadow-md">Subscribe</button>
+                </div>
+                <p className="text-xs text-gray-400 mt-2">No spam, just monthly updates.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom bar – legal & back to top */}
+          <div className="mt-16 pt-8 border-t border-[#B84A60]/30 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+            <div className="text-center md:text-left">
+              <p>© 2025 Prestige High School. All rights reserved. | PBO Section 18A | NPO 123-456</p>
+              <p class="text-xs opacity-70 mt-1"><p class="text-xs text-gray-400 mt-1">Designed with <i class="fas fa-heart text-[#B84A60]"></i> for excellence in education.</p> by AbaNtu Intelligence</p>
+
+            </div>
+            <div className="flex gap-6">
+              <a href="#" className="hover:text-[#B84A60] transition">Privacy Policy</a>
+              <a href="#" className="hover:text-[#B84A60] transition">Terms of Use</a>
+              <a href="#" className="hover:text-[#B84A60] transition">Accessibility</a>
+            </div>
+            <button id="backToTop" className="bg-[#B84A60] text-white w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition shadow-lg">
+              <i className="fas fa-arrow-up"></i>
+            </button>
+          </div>
+        </div>
+
+        {/* Decorative particles */}
+        <div className="absolute bottom-0 left-0 w-full h-20 pointer-events-none overflow-hidden">
+          <div className="absolute bottom-0 left-1/4 w-2 h-2 bg-[#B84A60] rounded-full animate-ping opacity-50"></div>
+          <div className="absolute bottom-2 left-1/2 w-1 h-1 bg-[#B84A60] rounded-full animate-pulse opacity-70"></div>
+          <div className="absolute bottom-4 left-3/4 w-1.5 h-1.5 bg-[#B84A60] rounded-full animate-bounce opacity-60"></div>
+        </div>
+      </footer>
+        </>
+      );
+    };
+
+    // ----- Future Page Content (preserved, with Oscar footer removed) -----
+    // Media for timeline modal
+    const timelineMedia = [
+      { id: 1, year: "2026", title: "AI Mentorship Pilot", type: "video", src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", poster: "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=800&h=450&fit=crop", description: "First AI learning companions deployed in Grade 10." },
+      { id: 2, year: "2028", title: "Quantum Immersion Lab", type: "image", src: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&h=450&fit=crop", description: "Holographic classroom opens to public." },
+      { id: 3, year: "2032", title: "Carbon-Negative Campus", type: "image", src: "https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?w=800&h=450&fit=crop", description: "Self-sustaining energy and vertical farms." },
+      { id: 4, year: "2040", title: "Neural-Adaptive Curriculum", type: "video", src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", poster: "https://images.unsplash.com/photo-1581094794329-c8112c89e4f7?w=800&h=450&fit=crop", description: "Brain-computer interfaces for personalised learning." }
+    ];
+
+    const MediaModal = ({ isOpen, item, onClose }) => {
+      if (!isOpen || !item) return null;
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay" onClick={onClose}>
+          <div className="max-w-4xl w-full bg-maroon-dark rounded-2xl overflow-hidden border border-beige-strong/40" onClick={(e) => e.stopPropagation()}>
+            <div className="relative">
+              <button onClick={onClose} className="absolute top-3 right-3 z-10 bg-black/50 text-white rounded-full p-1.5">✕</button>
+              {item.type === "image" ? (
+                <img src={item.src} alt={item.title} className="w-full max-h-[60vh] object-contain" />
+              ) : (
+                <video controls autoPlay poster={item.poster} className="w-full max-h-[60vh]">
+                  <source src={item.src} type="video/mp4" />
+                </video>
+              )}
+            </div>
+            <div className="p-5">
+              <h3 className="text-2xl font-display font-bold text-beige-light">{item.year}: {item.title}</h3>
+              <p className="text-beige-muted mt-1">{item.description}</p>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // AI Assistant Component (talks to user)
+    const FutureAssistant = () => {
+      const [messages, setMessages] = React.useState([{ sender: 'ai', text: "✨ Hello, visionary! I'm Aura, your future guide. Ask me about our 2040 roadmap, technologies, or the idea competition. What sparks your curiosity?" }]);
+      const [input, setInput] = React.useState("");
+      const [isTyping, setIsTyping] = React.useState(false);
+      const chatEndRef = React.useRef(null);
+
+      React.useEffect(() => {
+        chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, [messages]);
+
+      const handleSend = () => {
+        if (!input.trim()) return;
+        const userMsg = { sender: 'user', text: input };
+        setMessages(prev => [...prev, userMsg]);
+        setInput("");
+        setIsTyping(true);
+        setTimeout(() => {
+          let reply = "";
+          const lower = input.toLowerCase();
+          if (lower.includes("timeline") || lower.includes("roadmap")) reply = "📅 Our roadmap: 2026 AI Mentorship Pilot → 2028 Quantum Immersion Lab → 2032 Carbon-Negative Campus → 2040 Neural-Adaptive Curriculum. Click timeline images for details!";
+          else if (lower.includes("competition") || lower.includes("idea")) reply = "🎯 The Future Vision Competition is open! Submit a 500-word concept or prototype. Winners get R50,000 and mentorship. Click 'Submit Your Idea' above!";
+          else if (lower.includes("technology") || lower.includes("tech")) reply = "🧠 We're exploring Neuro-Learning Interfaces, Quantum Labs, AI Swarms, and more. Which one intrigues you most?";
+          else if (lower.includes("hello") || lower.includes("hi")) reply = "👋 Greetings! Ready to imagine education in 2040? I'm here to inspire you.";
+          else reply = "💡 That's a fascinating thought. Dive into our speculative tech cards or share your own future vision in the competition!";
+          setMessages(prev => [...prev, { sender: 'ai', text: reply }]);
+          setIsTyping(false);
+        }, 1200);
+      };
+
+      return (
+        <div className="futuristic-card p-5 mt-10">
+          <div className="flex items-center gap-2 border-b border-beige-strong/30 pb-3 mb-3">
+            <span className="text-2xl">🤖</span>
+            <h3 className="font-display font-bold text-xl">Future Assistant Aura</h3>
+            <span className="text-xs bg-maroon-glow/40 px-2 py-0.5 rounded-full">online</span>
+          </div>
+          <div className="h-64 overflow-y-auto space-y-3 pr-2">
+            {messages.map((msg, idx) => (
+              <div key={idx} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[80%] p-2 rounded-xl ${msg.sender === 'user' ? 'bg-maroon-glow/70 text-beige-light' : 'bg-beige-strong/20 text-beige-muted'}`}>
+                  {msg.text}
+                </div>
+              </div>
+            ))}
+            {isTyping && <div className="text-beige-strong/70 italic typing-cursor">Aura is thinking...</div>}
+            <div ref={chatEndRef} />
+          </div>
+          <div className="flex gap-2 mt-3">
+            <input type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} placeholder="Ask about future tech, timeline, competition..." className="flex-1 bg-maroon-deep/70 border border-beige-strong/40 rounded-full px-4 py-2 text-sm" />
+            <button onClick={handleSend} className="btn-future px-4 py-2 rounded-full text-sm">Send</button>
+          </div>
+        </div>
+      );
+    };
+
+    const FutureContent = () => {
+      const [competitionOpen, setCompetitionOpen] = React.useState(false);
+      const [ideaSubmitted, setIdeaSubmitted] = React.useState(false);
+      const [formData, setFormData] = React.useState({ name: '', email: '', ideaTitle: '', description: '' });
+      const [modalItem, setModalItem] = React.useState(null);
+      const [activeTab, setActiveTab] = React.useState("timeline");
+
+      const openModal = (item) => setModalItem(item);
+      const closeModal = () => setModalItem(null);
+
+      const handleCompetitionClick = () => setCompetitionOpen(true);
+      const closeCompetition = () => setCompetitionOpen(false);
+      const handleChange = (e) => setFormData({...formData, [e.target.name]: e.target.value});
+      const handleSubmitIdea = (e) => {
+        e.preventDefault();
+        setIdeaSubmitted(true);
+        setTimeout(() => { setIdeaSubmitted(false); setCompetitionOpen(false); setFormData({ name: '', email: '', ideaTitle: '', description: '' }); }, 3000);
+      };
+
+      return (
+        <>
+          {/* Hero with talking prompt */}
+          <div className="relative overflow-hidden">
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/circuit-board.png')] opacity-10"></div>
+            <div className="section-container relative z-10 text-center">
+              <div className="inline-block px-4 py-1 rounded-full bg-maroon-shiny/60 border border-beige-strong/40 text-beige-strong text-sm mb-6 backdrop-blur-sm">A TALKING FUTURE</div>
+              <h1 className="text-5xl md:text-7xl font-display font-bold leading-tight">Your <span className="text-beige-strong">Voice</span> Shapes Tomorrow</h1>
+              <div className="maroon-accent-line mx-auto mt-6"></div>
+              <p className="mt-6 max-w-2xl mx-auto text-beige-muted text-lg md:text-xl">Interact with our AI guide Aura, explore the timeline, and submit your vision for education in 2040.</p>
+            </div>
+          </div>
+
+          {/* Interactive Timeline + Media Gallery */}
+          <div className="section-container pt-0">
+            <div className="flex justify-center gap-4 mb-8">
+              <button onClick={() => setActiveTab("timeline")} className={`px-6 py-2 rounded-full transition ${activeTab === "timeline" ? "bg-maroon-glow text-white" : "bg-maroon-shiny/40 text-beige-muted"}`}>📅 Future Timeline</button>
+              <button onClick={() => setActiveTab("tech")} className={`px-6 py-2 rounded-full transition ${activeTab === "tech" ? "bg-maroon-glow text-white" : "bg-maroon-shiny/40 text-beige-muted"}`}>🧬 Speculative Tech</button>
+            </div>
+
+            {activeTab === "timeline" && (
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {timelineMedia.map((item) => (
+                  <div key={item.id} onClick={() => openModal(item)} className="futuristic-card overflow-hidden cursor-pointer group">
+                    <div className="relative h-40 bg-cover bg-center" style={{backgroundImage: `url(${item.type === 'image' ? item.src : item.poster})`, backgroundSize: 'cover'}}>
+                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition flex items-center justify-center">
+                        <span className="text-3xl">{item.type === 'video' ? '🎬' : '🖼️'}</span>
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <span className="text-beige-strong font-bold">{item.year}</span>
+                      <h3 className="font-display font-bold text-lg">{item.title}</h3>
+                      <p className="text-beige-muted text-sm mt-1 line-clamp-2">{item.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {activeTab === "tech" && (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="futuristic-card p-5"><div className="text-4xl mb-2">🧠</div><h3 className="font-bold">Neuro-Learning Interfaces</h3><p className="text-sm">Brain‑to‑curriculum adaptation, real‑time focus tracking.</p></div>
+                <div className="futuristic-card p-5"><div className="text-4xl mb-2">🌌</div><h3 className="font-bold">Quantum Immersion Labs</h3><p className="text-sm">Holographic 4D environments — walk through history.</p></div>
+                <div className="futuristic-card p-5"><div className="text-4xl mb-2">🤖</div><h3 className="font-bold">AI Mentorship Swarms</h3><p className="text-sm">Personalised tutors, career predictors, well‑being companions.</p></div>
+                <div className="futuristic-card p-5"><div className="text-4xl mb-2">🛸</div><h3 className="font-bold">Space‑Grade Sustainability</h3><p className="text-sm">Self‑powered campus, vertical hydroponics, carbon‑negative.</p></div>
+                <div className="futuristic-card p-5"><div className="text-4xl mb-2">🔮</div><h3 className="font-bold">Predictive Analytics</h3><p className="text-sm">94% accuracy in learner success forecasting.</p></div>
+                <div className="futuristic-card p-5"><div className="text-4xl mb-2">🌐</div><h3 className="font-bold">Metaverse Exchange</h3><p className="text-sm">Global classrooms, real‑time translation, AI avatars.</p></div>
+              </div>
+            )}
+          </div>
+
+          {/* AI Assistant (Talks to user) */}
+          <div className="section-container pt-0">
+            <FutureAssistant />
+          </div>
+
+          {/* Future Vision Competition CTA */}
+          <div className="bg-maroon-shiny/30 py-12 border-y border-beige-strong/20">
+            <div className="section-container !py-6 text-center">
+              <span className="text-beige-strong font-mono text-sm bg-maroon-deep/60 px-4 py-1 rounded-full">COMPETITION 2026</span>
+              <h2 className="text-3xl md:text-4xl font-display font-bold mt-3">Future Best Vision & Idea Competition</h2>
+              <div className="w-24 h-0.5 bg-beige-strong/60 mx-auto my-4"></div>
+              <p className="max-w-2xl mx-auto text-beige-muted">Submit a 500‑word concept, prototype sketch, or video. Winners receive R50,000 + mentorship. The future needs your voice.</p>
+              <button onClick={handleCompetitionClick} className="mt-6 btn-future text-white font-semibold px-8 py-2 rounded-full">✨ Submit Your Idea Now</button>
+            </div>
+          </div>
+
+          {/* Modal for timeline media */}
+          <MediaModal isOpen={!!modalItem} item={modalItem} onClose={closeModal} />
+
+          {/* Competition Modal */}
+          {competitionOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={closeCompetition}>
+              <div className="futuristic-card max-w-2xl w-full p-6" onClick={(e) => e.stopPropagation()}>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-2xl font-display font-bold text-beige-light">✨ Future Vision Competition</h3>
+                  <button onClick={closeCompetition} className="text-beige-strong hover:text-white text-2xl">&times;</button>
+                </div>
+                {ideaSubmitted ? (
+                  <div className="text-center py-8"><div className="text-5xl mb-3">🚀</div><p>Idea submitted! Our futurist panel will review within 14 days.</p><button onClick={closeCompetition} className="mt-4 btn-outline-future px-4 py-1 rounded-full">Close</button></div>
+                ) : (
+                  <form onSubmit={handleSubmitIdea} className="space-y-4">
+                    <input type="text" name="name" placeholder="Full name" value={formData.name} onChange={handleChange} className="w-full p-2 rounded-xl bg-maroon-deep/70 border border-beige-strong/40" required />
+                    <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} className="w-full p-2 rounded-xl bg-maroon-deep/70 border border-beige-strong/40" required />
+                    <input type="text" name="ideaTitle" placeholder="Idea title" value={formData.ideaTitle} onChange={handleChange} className="w-full p-2 rounded-xl" required />
+                    <textarea name="description" rows="4" placeholder="Describe your future education concept" value={formData.description} onChange={handleChange} className="w-full p-2 rounded-xl" required></textarea>
+                    <div className="flex justify-end gap-3"><button type="button" onClick={closeCompetition} className="btn-outline-future px-4 py-1 rounded-full">Cancel</button><button type="submit" className="btn-future text-white px-6 py-1 rounded-full">Submit</button></div>
+                  </form>
+                )}
+              </div>
+            </div>
+          )}
+        </>
+      );
+    };
+
+    // Wrap future content in Layout
+    const App = () => (
+      <Layout>
+        <FutureContent />
+      </Layout>
+    );
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

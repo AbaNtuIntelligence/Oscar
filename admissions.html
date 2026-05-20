@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Prestige High School — Admissions</title>
+  <!-- Tailwind CSS + Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom theme: beige & light maroon */
+    :root {
+      --beige: #F5EFE2;
+      --beige-strong: #ECE0C7;
+      --beige-deep: #E2D4B6;
+      --maroon-light: #B84A60;
+      --maroon: #9E2A3E;
+      --maroon-deep: #7A1F2F;
+    }
+    body {
+      background-color: var(--beige);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    h1, h2, h3, h4, .font-display {
+      font-family: 'Playfair Display', serif;
+    }
+    .maroon-accent-line {
+      width: 5rem;
+      height: 0.25rem;
+      background-color: var(--maroon-light);
+      border-radius: 9999px;
+      margin-bottom: 1.5rem;
+    }
+    .prestige-card {
+      background-color: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(4px);
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      border: 1px solid var(--beige-deep);
+    }
+    .prestige-card:hover {
+      transform: translateY(-4px);
+      background-color: white;
+      box-shadow: 0 25px 35px -12px rgba(90, 30, 40, 0.15);
+    }
+    .section-container {
+      max-width: 1280px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+      padding-top: 5rem;
+      padding-bottom: 5rem;
+    }
+    @media (min-width: 768px) {
+      .section-container {
+        padding-top: 7rem;
+        padding-bottom: 7rem;
+      }
+    }
+    .btn-primary {
+      background-color: var(--maroon-light);
+      transition: all 0.2s ease;
+    }
+    .btn-primary:hover {
+      background-color: var(--maroon);
+      transform: translateY(-2px);
+    }
+    .btn-outline {
+      border: 2px solid var(--maroon-light);
+      color: var(--maroon-light);
+      transition: all 0.2s ease;
+    }
+    .btn-outline:hover {
+      background-color: var(--maroon-light);
+      color: white;
+    }
+    /* Layout styles (shared header, sidebar, footer) */
+    .prestige-header {
+      background: white;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      width: 100%;
+    }
+    .header-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .hamburger {
+      background-color: var(--maroon-light);
+      border: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .hamburger:hover {
+      background-color: var(--maroon);
+      transform: scale(1.02);
+    }
+    .prestige-sidebar {
+      position: fixed;
+      top: 0;
+      left: -300px;
+      width: 300px;
+      height: 100%;
+      background: white;
+      box-shadow: 2px 0 25px rgba(0,0,0,0.15);
+      transition: left 0.3s ease;
+      z-index: 1000;
+      padding: 1.5rem;
+      border-right: 1px solid var(--beige-deep);
+      overflow-y: auto;
+    }
+    .prestige-sidebar.open {
+      left: 0;
+    }
+    .sidebar-header {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1.5rem;
+    }
+    .close-sidebar-btn {
+      background: #f0f0f0;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      transition: all 0.2s;
+    }
+    .close-sidebar-btn:hover {
+      background: var(--maroon-light);
+      color: white;
+    }
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 1rem;
+      transition: all 0.2s;
+      color: #2d3e50;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .nav-link:hover, .nav-link.active {
+      background: var(--maroon-light);
+      color: white;
+    }
+    .prestige-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      display: none;
+    }
+    .prestige-overlay.active {
+      display: block;
+    }
+    .page-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      min-height: calc(100vh - 80px);
+      background-color: var(--beige);
+    }
+    .prestige-footer {
+      background: #1a1a2e;
+      color: #ccc;
+      padding: 2rem 1rem;
+      text-align: center;
+      margin-top: 3rem;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;40..32,400;40..32,600;40..32,700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- React & ReactDOM & Babel -->
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    // ----- Layout Component (shared header, sidebar, footer) -----
+    const Layout = ({ children }) => {
+      const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+
+      React.useEffect(() => {
+        const saved = localStorage.getItem('prestige_sidebar_open');
+        if (saved === 'true') setIsSidebarOpen(true);
+      }, []);
+
+      const openSidebar = () => {
+        setIsSidebarOpen(true);
+        localStorage.setItem('prestige_sidebar_open', 'true');
+      };
+      const closeSidebar = () => {
+        setIsSidebarOpen(false);
+        localStorage.setItem('prestige_sidebar_open', 'false');
+      };
+      const toggleSidebar = () => {
+        if (isSidebarOpen) closeSidebar();
+        else openSidebar();
+      };
+
+      const navLinks = [
+  { name: 'Home', path: 'index.html', icon: <i className="fas fa-home"></i> },
+  { name: 'About', path: 'about.html', icon: <i className="fas fa-school"></i> },
+  { name: 'Academics', path: 'academics.html', icon: <i className="fas fa-graduation-cap"></i> },
+  { name: 'Admissions', path: 'admissions.html', icon: <i className="fas fa-file-alt"></i> },
+  { name: 'Achievements', path: 'achievements.html', icon: <i className="fas fa-trophy"></i> },
+  { name: 'Sports & Arts', path: 'sports-arts.html', icon: <i className="fas fa-futbol"></i> },
+  { name: 'Gallery', path: 'gallery.html', icon: <i className="fas fa-images"></i> },
+  { name: 'Community & Alumni', path: 'community.html', icon: <i className="fas fa-users"></i> },
+  { name: 'Donate', path: 'donate.html', icon: <i className="fas fa-hand-holding-heart"></i> },
+  { name: 'Contact', path: 'contact.html', icon: <i className="fas fa-envelope"></i> },
+  { name: 'Our Future', path: 'future.html', icon: <i className="fas fa-rocket"></i> }
+];
+
+      const currentPage = window.location.pathname.split('/').pop();
+
+      return (
+        <>
+          <div className="prestige-header">
+  <div className="header-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <button className="hamburger" onClick={toggleSidebar}>☰</button>
+    
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <img src="images/logo.png" alt="Prestige High School" style={{ height: '40px', width: 'auto' }} />
+      <span className="font-display text-2xl font-bold text-gray-800" style={{ whiteSpace: 'nowrap' }}>Oscar Mpetha High School</span>
+    </div>
+    
+    <div style={{ width: 48 }}></div>
+  </div>
+</div>
+
+          <div className={`prestige-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+            <div className="sidebar-header">
+              <button className="close-sidebar-btn" onClick={closeSidebar}>✕</button>
+            </div>
+            <div className="nav-links">
+              {navLinks.map(link => (
+                <a
+                  key={link.path}
+                  href={link.path}
+                  className={`nav-link ${currentPage === link.path ? 'active' : ''}`}
+                >
+                  <span>{link.icon}</span> {link.name}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div className={`prestige-overlay ${isSidebarOpen ? 'active' : ''}`} onClick={closeSidebar}></div>
+
+          <main className="page-content">{children}</main>
+
+           {/* ===== OVERSIZED FUTURISTIC FOOTER ===== */}
+      <footer className="relative bg-[#6B1D2D] text-[#F5F0E6] text-[#F5F0E6] pt-20 pb-10 border-t-4 border-[#B84A60]/50 shadow-2xl overflow-hidden mt-16">
+        {/* Animated glow line */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#B84A60] to-transparent animate-pulse"></div>
+
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          {/* Main footer grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
+            
+            {/* Column 1: School Identity & Logo */}
+            <div>
+            <div className="flex items-center gap-4 mb-8">
+  <div className="w-20 h-20 rounded-full border-2 border-[#F5CCA0] bg-[#6B1D2D]/40 backdrop-blur-sm flex items-center justify-center overflow-hidden shadow-[0_0_15px_rgba(245,204,160,0.3)]">
+    <img src="images/logo.png" alt="Oscar Mpetha Logo" className="w-12 h-12 object-contain" />
+  </div>
+  <div className="serif">
+    <h2 className="text-2xl sm:text-3xl font-black tracking-wide text-[#F5CCA0] drop-shadow-lg">
+      <span className="font-black">OSCAR MPETHA</span>
+      <br />
+      <span className="text-base sm:text-lg font-normal text-[#F5F0E6]">HIGH SCHOOL</span>
+    </h2>
+    <div className="text-xs tracking-wider opacity-80">EST. 1979 · NYANGA, CAPE FLATS</div>
+  </div>
+</div>
+              <p className="text-gray-300 text-sm leading-relaxed">A beacon of academic excellence, holistic development, and community spirit. Shaping future leaders since 1965.</p>
+              <div className="flex gap-4 mt-6">
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-facebook-f text-xl"></i></a>
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-twitter text-xl"></i></a>
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-instagram text-xl"></i></a>
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-youtube text-xl"></i></a>
+                <a href="#" className="text-gray-400 hover:text-[#B84A60] transition transform hover:scale-110"><i className="fab fa-linkedin-in text-xl"></i></a>
+              </div>
+            </div>
+
+            {/* Column 2: Quick Links */}
+            <div>
+              <h3 className="text-lg font-bold uppercase tracking-wider border-l-4 border-[#B84A60] pl-3 mb-5">Explore</h3>
+              <ul className="space-y-3 text-sm">
+                <li><a href="about.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> About Us</a></li>
+                <li><a href="academics.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Academics & Career Compass</a></li>
+                <li><a href="admissions.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Admissions</a></li>
+                <li><a href="achievements.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Achievements</a></li>
+                <li><a href="sports-arts.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Sports & Arts</a></li>
+                <li><a href="gallery.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Gallery</a></li>
+                <li><a href="future.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> Our Future</a></li>
+              </ul>
+            </div>
+
+            {/* Column 3: Community & Support */}
+            <div>
+              <h3 className="text-lg font-bold uppercase tracking-wider border-l-4 border-[#B84A60] pl-3 mb-5">Community</h3>
+              <ul className="space-y-3 text-sm">
+                <li><a href="community-alumni.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-users"></i> Alumni & Community</a></li>
+                <li><a href="donate.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-hand-holding-heart"></i> Donate & Support</a></li>
+                <li><a href="contact.html" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-phone-alt"></i> Contact Us</a></li>
+                <li><a href="#" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-calendar-alt"></i> Events Calendar</a></li>
+                <li><a href="#" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-graduation-cap"></i> Alumni Registration</a></li>
+                <li><a href="#" className="hover:text-[#B84A60] transition flex items-center gap-2"><i className="fas fa-chalkboard-user"></i> Parent Portal</a></li>
+              </ul>
+            </div>
+
+            {/* Column 4: Newsletter & Contact */}
+            <div>
+              <h3 className="text-lg font-bold uppercase tracking-wider border-l-4 border-[#B84A60] pl-3 mb-5">Connect</h3>
+              <div className="space-y-3 text-sm">
+                <p><i className="fas fa-map-marker-alt w-5 text-[#B84A60]"></i> 123 Academy Avenue, Prestige Heights, Johannesburg, 2196</p>
+                <p><i className="fas fa-phone-alt w-5 text-[#B84A60]"></i> +27 12 345 6789</p>
+                <p><i className="fas fa-envelope w-5 text-[#B84A60]"></i> info@prestigehigh.co.za</p>
+                <p><i className="fas fa-clock w-5 text-[#B84A60]"></i> Mon–Fri: 07:30 – 16:30</p>
+              </div>
+              <div className="mt-6">
+                <label className="block text-sm font-semibold mb-2">Subscribe to Our Newsletter</label>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input type="email" placeholder="Your email address" className="bg-white/10 border border-[#B84A60]/40 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-[#B84A60] w-full text-white placeholder-gray-400" />
+                  <button id="newsletterSubscribe" className="bg-[#B84A60] text-white font-bold px-5 py-2 rounded-full hover:bg-[#9E2A3E] transition shadow-md">Subscribe</button>
+                </div>
+                <p className="text-xs text-gray-400 mt-2">No spam, just monthly updates.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom bar – legal & back to top */}
+          <div className="mt-16 pt-8 border-t border-[#B84A60]/30 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+            <div className="text-center md:text-left">
+              <p>© 2025 Prestige High School. All rights reserved. | PBO Section 18A | NPO 123-456</p>
+                <p class="text-xs opacity-70 mt-1"><p class="text-xs text-gray-400 mt-1">Designed with <i class="fas fa-heart text-[#B84A60]"></i> for excellence in education.</p> by AbaNtu Intelligence</p>
+
+            </div>
+            <div className="flex gap-6">
+              <a href="#" className="hover:text-[#B84A60] transition">Privacy Policy</a>
+              <a href="#" className="hover:text-[#B84A60] transition">Terms of Use</a>
+              <a href="#" className="hover:text-[#B84A60] transition">Accessibility</a>
+            </div>
+            <button id="backToTop" className="bg-[#B84A60] text-white w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition shadow-lg">
+              <i className="fas fa-arrow-up"></i>
+            </button>
+          </div>
+        </div>
+
+        {/* Decorative particles */}
+        <div className="absolute bottom-0 left-0 w-full h-20 pointer-events-none overflow-hidden">
+          <div className="absolute bottom-0 left-1/4 w-2 h-2 bg-[#B84A60] rounded-full animate-ping opacity-50"></div>
+          <div className="absolute bottom-2 left-1/2 w-1 h-1 bg-[#B84A60] rounded-full animate-pulse opacity-70"></div>
+          <div className="absolute bottom-4 left-3/4 w-1.5 h-1.5 bg-[#B84A60] rounded-full animate-bounce opacity-60"></div>
+        </div>
+      </footer>
+    </>
+      );
+    };
+
+    // ----- Admissions Page Content (unchanged, with old footer removed) -----
+    const AdmissionsContent = () => {
+      const [formSubmitted, setFormSubmitted] = React.useState(false);
+      const [formData, setFormData] = React.useState({
+        fullName: '', email: '', phone: '', grade: '', parentName: ''
+      });
+
+      const handleInputChange = (e) => {
+        setFormData({...formData, [e.target.name]: e.target.value});
+      };
+      
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log("Application data:", formData);
+        setFormSubmitted(true);
+        setTimeout(() => setFormSubmitted(false), 4000);
+        setFormData({ fullName: '', email: '', phone: '', grade: '', parentName: '' });
+      };
+
+      const handleDownloadForm = () => {
+        alert('Demo: Application form download would start. In production, link to actual PDF file.');
+      };
+
+      const handleDownloadBrochure = () => {
+        alert('Demo: Prospectus download would start. In production, link actual PDF.');
+      };
+
+      return (
+        <>
+          {/* Hero Section */}
+          <div className="relative bg-gradient-to-br from-[#F5EFE2] via-[#F5EFE2]/95 to-[#E2D4B6]/40 overflow-hidden">
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')] opacity-20"></div>
+            <div className="section-container relative z-10 text-center">
+              <div className="inline-block px-4 py-1 rounded-full bg-[#B84A60]/10 text-[#B84A60] font-semibold text-sm mb-6 tracking-wide">ENROLL FOR 2026</div>
+              <h1 className="text-5xl md:text-7xl font-display font-bold text-gray-800 leading-tight">
+                Admi<span className="text-[#B84A60]">ssions</span>
+              </h1>
+              <div className="maroon-accent-line mx-auto mt-6"></div>
+              <p className="mt-6 max-w-2xl mx-auto text-gray-600 text-lg md:text-xl font-light">Applications are now open for Grades 8–12. Secure your child's future at one of South Africa's leading independent schools.</p>
+              <div className="flex flex-wrap justify-center gap-5 mt-10">
+                <button onClick={() => document.getElementById('applyForm').scrollIntoView({ behavior: 'smooth' })} className="btn-primary text-white font-bold py-3 px-8 rounded-full shadow-lg transition">✨ Apply Online Now</button>
+                <button onClick={handleDownloadForm} className="btn-outline font-bold py-3 px-8 rounded-full shadow-md transition">📄 Download Application Form</button>
+                <button onClick={handleDownloadBrochure} className="bg-white/80 hover:bg-white text-maroon-light font-semibold py-3 px-6 rounded-full shadow transition border border-beige-deep">📘 Prospectus</button>
+              </div>
+            </div>
+          </div>
+
+          {/* Admission Steps & Key Dates */}
+          <div className="bg-white/40">
+            <div className="section-container">
+              <div className="grid lg:grid-cols-2 gap-12">
+                <div>
+                  <h2 className="text-3xl font-display font-bold text-gray-800">Admission Process</h2>
+                  <div className="maroon-accent-line mt-2"></div>
+                  <div className="space-y-6 mt-6">
+                    <div className="flex gap-4 items-start">
+                      <div className="w-10 h-10 rounded-full bg-maroon-light/20 text-maroon-light font-bold flex items-center justify-center text-xl">1</div>
+                      <div><h3 className="font-bold text-gray-800">Submit Application</h3><p className="text-gray-600 text-sm">Complete online form or download & return with non-refundable fee.</p></div>
+                    </div>
+                    <div className="flex gap-4 items-start">
+                      <div className="w-10 h-10 rounded-full bg-maroon-light/20 text-maroon-light font-bold flex items-center justify-center text-xl">2</div>
+                      <div><h3 className="font-bold text-gray-800">Entrance Assessment</h3><p className="text-gray-600 text-sm">Academic evaluation & interview (Grade 8–11). Grade 12 based on previous results.</p></div>
+                    </div>
+                    <div className="flex gap-4 items-start">
+                      <div className="w-10 h-10 rounded-full bg-maroon-light/20 text-maroon-light font-bold flex items-center justify-center text-xl">3</div>
+                      <div><h3 className="font-bold text-gray-800">Offer & Enrollment</h3><p className="text-gray-600 text-sm">Successful candidates receive offer letter. Complete enrollment within 14 days.</p></div>
+                    </div>
+                  </div>
+                </div>
+                <div className="prestige-card p-6">
+                  <h3 className="text-2xl font-display font-bold text-gray-800">📅 Key Dates for 2026 Intake</h3>
+                  <ul className="mt-4 space-y-3">
+                    <li className="flex justify-between border-b border-beige-deep pb-2"><span>Applications open</span><span className="font-semibold text-maroon-light">1 March 2025</span></li>
+                    <li className="flex justify-between border-b border-beige-deep pb-2"><span>Closing date (Grade 8)</span><span className="font-semibold text-maroon-light">30 June 2025</span></li>
+                    <li className="flex justify-between border-b border-beige-deep pb-2"><span>Assessment window</span><span className="font-semibold text-maroon-light">July – August 2025</span></li>
+                    <li className="flex justify-between border-b border-beige-deep pb-2"><span>Offers sent</span><span className="font-semibold text-maroon-light">By 30 September 2025</span></li>
+                    <li className="flex justify-between"><span>Academic year starts</span><span className="font-semibold text-maroon-light">15 January 2026</span></li>
+                  </ul>
+                  <p className="text-xs text-gray-400 mt-4">*Limited spaces available. Early application advised.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Application Requirements & Tuition */}
+          <div className="bg-[#ECE0C7]/30 py-16">
+            <div className="section-container">
+              <div className="grid md:grid-cols-2 gap-10">
+                <div className="prestige-card p-6">
+                  <h3 className="text-xl font-display font-bold flex items-center gap-2">📋 Required Documents</h3>
+                  <div className="mt-4 space-y-2 text-gray-700">
+                    <p>✓ Certified copy of child's birth certificate</p>
+                    <p>✓ Latest school report (previous year & current)</p>
+                    <p>✓ ID/Passport of parents/guardians</p>
+                    <p>✓ Proof of residence</p>
+                    <p>✓ Immunisation record (Grade 8 only)</p>
+                    <p>✓ Transfer letter (if applicable)</p>
+                  </div>
+                </div>
+                <div className="prestige-card p-6">
+                  <h3 className="text-xl font-display font-bold flex items-center gap-2">💰 Fees & Financial Aid</h3>
+                  <div className="mt-4 space-y-3">
+                    <p className="flex justify-between"><span>Application fee (non-refundable)</span><span className="font-semibold">R 350</span></p>
+                    <p className="flex justify-between"><span>Annual tuition (Grades 8–9)</span><span className="font-semibold">R 98,500</span></p>
+                    <p className="flex justify-between"><span>Annual tuition (Grades 10–12)</span><span className="font-semibold">R 112,000</span></p>
+                    <p className="text-sm text-maroon-light mt-2">*Merit-based scholarships & bursaries available. Inquire with admissions office.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Online Application Form */}
+          <div id="applyForm" className="section-container scroll-mt-20">
+            <div className="max-w-3xl mx-auto prestige-card p-6 md:p-8">
+              <h2 className="text-3xl font-display font-bold text-center text-gray-800">Apply Online</h2>
+              <div className="maroon-accent-line mx-auto mt-2"></div>
+              <p className="text-center text-gray-500 mb-6">Fill in the form below and our admissions team will contact you within 48 hours.</p>
+              {formSubmitted && (
+                <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded-lg">✅ Application received! We'll be in touch soon.</div>
+              )}
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                  <label className="block text-gray-700 font-medium mb-1">Full Name of Learner *</label>
+                  <input type="text" name="fullName" required value={formData.fullName} onChange={handleInputChange} className="w-full p-3 rounded-xl border border-beige-deep focus:outline-none focus:ring-2 focus:ring-maroon-light/50 bg-white/80" />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-medium mb-1">Parent/Guardian Full Name *</label>
+                  <input type="text" name="parentName" required value={formData.parentName} onChange={handleInputChange} className="w-full p-3 rounded-xl border border-beige-deep bg-white/80" />
+                </div>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-1">Email Address *</label>
+                    <input type="email" name="email" required value={formData.email} onChange={handleInputChange} className="w-full p-3 rounded-xl border border-beige-deep bg-white/80" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-1">Phone Number *</label>
+                    <input type="tel" name="phone" required value={formData.phone} onChange={handleInputChange} className="w-full p-3 rounded-xl border border-beige-deep bg-white/80" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-medium mb-1">Applying for Grade (2026) *</label>
+                  <select name="grade" required value={formData.grade} onChange={handleInputChange} className="w-full p-3 rounded-xl border border-beige-deep bg-white/80">
+                    <option value="">Select grade</option>
+                    <option>Grade 8</option><option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
+                  </select>
+                </div>
+                <div className="pt-4">
+                  <button type="submit" className="w-full btn-primary text-white font-bold py-3 rounded-xl shadow-md transition text-lg">Submit Application →</button>
+                </div>
+                <p className="text-xs text-gray-400 text-center">By submitting, you consent to our admissions process and data handling policy.</p>
+              </form>
+            </div>
+          </div>
+
+          {/* CTA Banner with additional buttons */}
+          <div className="bg-maroon-light/10 py-12">
+            <div className="section-container !py-8 text-center">
+              <h3 className="text-2xl font-display font-bold text-gray-800">Still have questions?</h3>
+              <div className="flex flex-wrap justify-center gap-5 mt-6">
+                <button className="bg-white text-maroon-light font-semibold px-6 py-2 rounded-full shadow flex items-center gap-2">📞 Call Admissions: +27 12 345 6789</button>
+                <button className="bg-maroon-light text-white font-semibold px-6 py-2 rounded-full shadow flex items-center gap-2">✉️ admissions@prestigehigh.co.za</button>
+                <button className="border border-maroon-light text-maroon-light font-semibold px-6 py-2 rounded-full flex items-center gap-2">📅 Book a Campus Tour</button>
+              </div>
+            </div>
+          </div>
+        </>
+      );
+    };
+
+    // Wrap everything in Layout
+    const App = () => (
+      <Layout>
+        <AdmissionsContent />
+      </Layout>
+    );
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
